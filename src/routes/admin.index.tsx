@@ -5,16 +5,15 @@ import { Panel, Stat } from "@/components/admin/ui";
 export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [
-      { title: "Dashboard overview — Scholia Admin" },
+      { title: "Editorial overview — Docket Editorial" },
       {
         name: "description",
-        content:
-          "Corpus totals, recent editorial activity, and quick actions for the Scholia debate corpus.",
+        content: "Case totals, recent editorial activity, and quick actions for the Docket record.",
       },
-      { property: "og:title", content: "Dashboard overview — Scholia Admin" },
+      { property: "og:title", content: "Editorial overview — Docket Editorial" },
       {
         property: "og:description",
-        content: "Corpus totals and quick actions for the Scholia debate corpus.",
+        content: "Case totals and quick actions for the Docket record.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -31,41 +30,39 @@ function Overview() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
-        <h1 className="font-serif text-2xl leading-tight font-medium">Editorial overview</h1>
+        <h1 className="font-display text-2xl leading-tight font-semibold tracking-[-0.02em]">
+          Editorial overview
+        </h1>
         <p className="mt-1 text-[13px] text-mist">
-          Everything in the corpus at a glance. Changes you make here are saved in this browser.
+          Everything in the record at a glance. Changes are saved to the editorial database.
         </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
-          label="Primary entries"
+          label="Cases"
           value={data.entries.length}
-          note={`${verses} verses · ${premises} premises`}
+          note={`${verses} texts · ${premises} claims`}
         />
-        <Stat label="Commentaries" value={data.commentaries.length} note="Across all scholars" />
-        <Stat label="Rebuttals" value={data.rebuttals.length} note="Counter-arguments on file" />
-        <Stat
-          label="Cited sources"
-          value={data.sources.length}
-          note={`${pending} awaiting verification`}
-        />
+        <Stat label="Commentary" value={data.commentaries.length} note="Across all scholars" />
+        <Stat label="Rebuttals" value={data.rebuttals.length} note="Arguments on file" />
+        <Stat label="Sources" value={data.sources.length} note={`${pending} awaiting review`} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <Panel title="Recent primary entries" subtitle="Newest first">
-          <ul className="space-y-2">
+        <Panel title="Recent cases" subtitle="Newest first">
+          <ul className="divide-y divide-rule">
             {data.entries
               .slice()
               .reverse()
               .slice(0, 5)
               .map((e) => (
-                <li key={e.id} className="rounded-lg bg-white/55 px-3 py-2.5 ring-1 ring-white/75">
+                <li key={e.id} className="py-2.5">
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="truncate font-serif text-[14px] text-ink">{e.title}</span>
-                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
-                      {e.category}
+                    <span className="truncate font-display text-[14px] font-semibold text-ink">
+                      {e.title}
                     </span>
+                    <span className="shrink-0 font-mono text-[9px] text-mist">{e.category}</span>
                   </div>
                   <p className="mt-0.5 truncate text-[12px] text-mist">{e.reference}</p>
                 </li>
@@ -77,33 +74,33 @@ function Overview() {
           <div className="grid gap-2">
             <Link
               to="/admin/entries"
-              className="rounded-lg bg-ink px-3 py-2.5 text-center text-[12.5px] font-medium text-paper hover:opacity-90"
+              className="border border-ink bg-ink px-3 py-2.5 text-center text-[12.5px] font-medium text-paper hover:opacity-90"
             >
-              Add a verse or premise
+              Add a case
             </Link>
             <Link
               to="/admin/commentaries"
-              className="rounded-lg bg-white/60 px-3 py-2.5 text-center text-[12.5px] text-steel ring-1 ring-white/80 hover:bg-white/85"
+              className="border border-rule bg-surface px-3 py-2.5 text-center text-[12.5px] text-steel hover:border-steel/50 hover:text-ink"
             >
-              Attach a commentary
+              Attach commentary
             </Link>
             <Link
               to="/admin/rebuttals"
-              className="rounded-lg bg-white/60 px-3 py-2.5 text-center text-[12.5px] text-steel ring-1 ring-white/80 hover:bg-white/85"
+              className="border border-rule bg-surface px-3 py-2.5 text-center text-[12.5px] text-steel hover:border-steel/50 hover:text-ink"
             >
               Record a rebuttal
             </Link>
             <Link
               to="/admin/sources"
-              className="rounded-lg bg-white/60 px-3 py-2.5 text-center text-[12.5px] text-steel ring-1 ring-white/80 hover:bg-white/85"
+              className="border border-rule bg-surface px-3 py-2.5 text-center text-[12.5px] text-steel hover:border-steel/50 hover:text-ink"
             >
               Register a source
             </Link>
             <Link
               to="/admin/taxonomy"
-              className="rounded-lg bg-white/60 px-3 py-2.5 text-center text-[12.5px] text-steel ring-1 ring-white/80 hover:bg-white/85"
+              className="border border-rule bg-surface px-3 py-2.5 text-center text-[12.5px] text-steel hover:border-steel/50 hover:text-ink"
             >
-              Organise categories & tags
+              Organise taxonomy
             </Link>
           </div>
         </Panel>

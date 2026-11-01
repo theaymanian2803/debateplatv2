@@ -182,7 +182,7 @@ export const upsertEntry = async (entry: AdminEntry): Promise<AdminData> => {
   }).entries[0]!;
   const stmts: InStatement[] = [
     {
-      sql: `INSERT OR REPLACE INTO entries (id, kind, title, original_text, translation, category, sub_category, reference, sections, map, translations, related, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      sql: `INSERT OR REPLACE INTO entries (id, kind, title, original_text, translation, category, sub_category, reference, sections, map, translations, related, scripture, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         row["id"],
         row["kind"],
@@ -196,6 +196,7 @@ export const upsertEntry = async (entry: AdminEntry): Promise<AdminData> => {
         row["map"],
         row["translations"],
         row["related"],
+        row["scripture"],
         sortOrder,
       ] as InValue[],
     },
@@ -634,4 +635,63 @@ export async function aiSuggestSource(
   } catch {
     return { available: false };
   }
+}
+
+// --- Early-access waitlist -------------------------------------------------
+
+export type WaitlistEntry = {
+  id: string;
+  email: string;
+  role: string;
+  note: string;
+  createdAt: number;
+};
+
+export type WaitlistResult = { ok: boolean; alreadyRegistered: boolean; error?: string };
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+export async function joinWaitlist(input: {
+  email: string;
+  role?: string;
+  note?: string;
+}): Promise<WaitlistResult> {
+  const email = input.email.trim().toLowerCase();
+  if (!EMAIL_PATTERN.test(email) || email.length > 254) {
+    return { ok: false, alreadyRegistered: false, error: "Enter a valid email address." };
+  }
+  const db = await getDb();
+  const existing = await db.execute({
+    sql: "SELECT id FROM waitlist WHERE email = ?",
+    args: [email],
+  });
+  if (existing.rows.length > 0) {
+    return { ok: true, alreadyRegistered: true };
+  }
+  await db.execute({
+    sql: "INSERT OR IGNORE INTO waitlist (id, email, role, note, created_at) VALUES (?, ?, ?, ?, ?)",
+    args: [
+      uid("wait"),
+      email,
+      (input.role ?? "").trim().slice(0, 80),
+      (input.note ?? "").trim().slice(0, 500),
+      Date.now(),
+    ],
+  });
+  return { ok: true, alreadyRegistered: false };
+}
+
+export async function listWaitlist(limit = 200): Promise<WaitlistEntry[]> {
+  const db = await getDb();
+  const res = await db.execute({
+    sql: "SELECT * FROM waitlist ORDER BY created_at DESC LIMIT ?",
+    args: [Math.max(1, Math.min(limit, 500))],
+  });
+  return (res.rows as Record<string, unknown>[]).map((r) => ({
+    id: String(r["id"]),
+    email: String(r["email"]),
+    role: String(r["role"]),
+    note: String(r["note"]),
+    createdAt: Number(r["created_at"]),
+  }));
 }

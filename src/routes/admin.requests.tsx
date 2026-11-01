@@ -8,10 +8,10 @@ import { StatusBadge } from "@/components/StatusBadge";
 export const Route = createFileRoute("/admin/requests")({
   head: () => ({
     meta: [
-      { title: "Source requests — Scholia Admin" },
+      { title: "Source requests — Docket Editorial" },
       {
         name: "description",
-        content: "Review reader-submitted citations and promote them to verified sources.",
+        content: "Review reader-submitted citations and promote them to the record.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -46,7 +46,9 @@ function RequestsPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-4">
       <div>
-        <h1 className="font-serif text-2xl leading-tight font-medium">Source requests</h1>
+        <h1 className="font-display text-2xl leading-tight font-semibold tracking-[-0.02em]">
+          Source requests
+        </h1>
         <p className="mt-1 text-[13px] text-mist">
           Readers flag citations that lack an archive. Approving a request registers a verified
           source and promotes every matching citation across the corpus.
@@ -64,7 +66,7 @@ function RequestsPage() {
           <option value="dismissed">Dismissed</option>
           <option value="all">All</option>
         </Select>
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
+        <span className="font-mono text-[9.5px] text-mist">
           {(data ?? []).filter((r) => r.status === "pending").length} pending
         </span>
       </div>
@@ -75,17 +77,15 @@ function RequestsPage() {
         ) : (
           <ul className="space-y-2">
             {shown.map((r) => (
-              <li key={r.id} className="rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75">
+              <li key={r.id} className="border-b border-rule py-3 last:border-b-0">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
+                    <div className="font-mono text-[9px] text-mist">
                       {new Date(r.createdAt).toLocaleString()} · target
                     </div>
                     <p className="mt-0.5 text-[13px] leading-snug text-steel">{r.target}</p>
-                    <div className="mt-2 rounded-lg bg-white/45 px-2.5 py-2 ring-1 ring-white/70">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
-                        Proposed citation
-                      </div>
+                    <div className="mt-2 border border-rule bg-surface-2/50 px-2.5 py-2">
+                      <div className="font-mono text-[9px] text-mist">Proposed citation</div>
                       <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink">{r.proposal}</p>
                       {(r.archive || r.note) && (
                         <p className="mt-1 font-mono text-[10px] text-mist">

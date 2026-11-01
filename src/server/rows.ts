@@ -7,6 +7,7 @@ import {
   type AdminRebuttal,
   type AdminSource,
 } from "@/lib/admin-store";
+import type { ScriptureMeta } from "@/lib/scripture";
 
 export type Row = Record<string, unknown>;
 
@@ -34,6 +35,7 @@ export function adminDataToRows(data: AdminData): DbSnapshot {
     map: JSON.stringify(e.map),
     translations: JSON.stringify(e.translations),
     related: JSON.stringify(e.related),
+    scripture: JSON.stringify(e.scripture ?? null),
     sort_order: i,
   }));
 
@@ -94,6 +96,25 @@ export function adminDataToRows(data: AdminData): DbSnapshot {
   return { entries, commentaries, rebuttals, sources, categories, tags, entryTags };
 }
 
+function parseScripture(raw: unknown): ScriptureMeta | undefined {
+  if (typeof raw !== "string" || raw.trim() === "" || raw === "null") return undefined;
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return undefined;
+    const meta = parsed as Record<string, unknown>;
+    if (
+      typeof meta["translationLabel"] !== "string" ||
+      typeof meta["reference"] !== "string" ||
+      (meta["provider"] !== "free-use" && meta["provider"] !== "api-bible")
+    ) {
+      return undefined;
+    }
+    return parsed as ScriptureMeta;
+  } catch {
+    return undefined;
+  }
+}
+
 export function rowsToAdminData(snap: DbSnapshot): AdminData {
   const tagsByEntry = new Map<string, string[]>();
   for (const link of snap.entryTags) {
@@ -117,6 +138,7 @@ export function rowsToAdminData(snap: DbSnapshot): AdminData {
     map: JSON.parse(String(r["map"])),
     translations: JSON.parse(String(r["translations"] ?? "[]")),
     related: JSON.parse(String(r["related"] ?? "[]")),
+    scripture: parseScripture(r["scripture"]),
   }));
 
   const commentaries: AdminCommentary[] = snap.commentaries.map((r) => ({

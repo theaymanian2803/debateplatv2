@@ -1,7 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, ShieldCheck, X } from "lucide-react";
-import { siteNavItems, type SiteNavItem } from "@/lib/nav";
+import { ArrowRight, Menu, ShieldCheck, X } from "lucide-react";
+import { siteNavItems } from "@/lib/nav";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+function Mark({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`relative flex size-8 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink font-display text-[16px] leading-none font-semibold text-paper ${className}`}
+    >
+      <span className="absolute inset-x-0 top-0 h-[3px] bg-brass" />
+      <span className="mt-0.5">D</span>
+    </span>
+  );
+}
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
@@ -18,74 +31,149 @@ export function SiteNav() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 flex items-center gap-1 border-b border-white/60 bg-white/35 px-4 py-2 backdrop-blur-xl sm:px-6">
-        <span className="mr-4 shrink-0 font-serif text-[15px] leading-none font-medium text-ink">
-          Scholia
-        </span>
-        <div className="hidden items-center gap-1 lg:flex">
-          {siteNavItems.map((item) => (
-            <NavLink key={item.to} item={item} />
-          ))}
+      <header className="sticky top-0 z-50 border-b border-rule bg-canvas">
+        <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
+          <Link to="/" className="group flex min-w-0 items-center gap-2.5" onClick={close}>
+            <Mark />
+            <span className="font-display text-[19px] leading-none font-semibold tracking-[-0.02em] text-ink">
+              Docket
+            </span>
+          </Link>
+
+          <span aria-hidden className="mx-2 hidden h-5 w-px bg-rule sm:block" />
+
+          <nav aria-label="Primary" className="hidden items-center gap-0.5 sm:flex">
+            {siteNavItems.slice(1).map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                activeOptions={{ exact: item.to === "/" }}
+                activeProps={{ className: "bg-surface-2 text-ink", "aria-current": "page" }}
+                inactiveProps={{ className: "text-steel hover:bg-highlight hover:text-ink" }}
+                className="px-2.5 py-1.5 text-[13px] font-medium transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <a
+              href="/#mechanism"
+              className="px-2.5 py-1.5 text-[13px] font-medium text-steel transition-colors hover:bg-highlight hover:text-ink"
+            >
+              How it works
+            </a>
+            <a
+              href="/#access"
+              className="px-2.5 py-1.5 text-[13px] font-medium text-steel transition-colors hover:bg-highlight hover:text-ink"
+            >
+              Access
+            </a>
+          </nav>
+
+          <div className="ml-auto flex items-center gap-2">
+            <span className="hidden sm:inline-flex">
+              <ThemeToggle />
+            </span>
+            <Link
+              to="/admin"
+              className="hidden items-center gap-1.5 border border-rule bg-surface px-2.5 py-1.5 text-[12px] font-medium text-steel transition-colors hover:border-steel/50 hover:text-ink sm:inline-flex"
+            >
+              <ShieldCheck className="size-3.5" />
+              Editorial
+            </Link>
+            <a
+              href="/#access"
+              className="hidden items-center gap-1.5 border border-ink bg-ink px-3 py-1.5 text-[12px] font-medium text-paper transition-opacity hover:opacity-90 sm:inline-flex"
+            >
+              Request access
+              <ArrowRight className="size-3.5" />
+            </a>
+            <button
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={open}
+              className="p-2 text-ink transition-colors hover:bg-highlight sm:hidden"
+            >
+              <Menu className="size-5" />
+            </button>
+          </div>
         </div>
-        <Link
-          to="/admin"
-          aria-label="Admin"
-          title="Editorial desk"
-          className="ml-auto rounded-md p-2 text-steel ring-1 ring-transparent transition-colors hover:bg-white/60 hover:text-ink lg:ml-3"
-        >
-          <ShieldCheck className="size-5" />
-        </Link>
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Open menu"
-          aria-expanded={open}
-          className="rounded-md p-2 text-ink transition-colors hover:bg-white/50 lg:hidden"
-        >
-          <Menu className="size-5" />
-        </button>
-      </nav>
+      </header>
 
       {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <button
-            aria-label="Close menu"
-            onClick={close}
-            className="absolute inset-0 bg-ink/20 backdrop-blur-sm"
-          />
-          <div className="absolute inset-y-0 left-0 flex w-64 max-w-[85vw] flex-col overflow-y-auto border-r border-white/60 bg-white/70 px-4 py-5 shadow-2xl backdrop-blur-xl">
-            <div className="flex items-center justify-between px-2">
-              <div className="font-serif text-lg leading-none font-medium">Scholia</div>
+        <div className="fixed inset-0 z-50 sm:hidden">
+          <button aria-label="Close menu" onClick={close} className="absolute inset-0 bg-ink/30" />
+          <div className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-rule bg-surface px-5 py-5 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <Mark />
+                <div>
+                  <div className="font-display text-[18px] leading-none font-semibold">Docket</div>
+                  <div className="mt-1 font-mono text-[9px] tracking-[0.02em] text-mist">
+                    Argument, on the record
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={close}
                 aria-label="Close menu"
-                className="rounded-md p-2 text-steel transition-colors hover:bg-white/60"
+                className="p-2 text-steel transition-colors hover:bg-highlight hover:text-ink"
               >
                 <X className="size-4" />
               </button>
             </div>
-            <nav className="mt-6 space-y-1">
+
+            <nav aria-label="Mobile" className="mt-7 space-y-0.5">
               {siteNavItems.map((item) => (
-                <NavLink key={item.to} item={item} onNavigate={close} />
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={close}
+                  activeOptions={{ exact: item.to === "/" }}
+                  activeProps={{ className: "bg-surface-2 text-ink", "aria-current": "page" }}
+                  inactiveProps={{ className: "text-steel hover:bg-highlight hover:text-ink" }}
+                  className="flex min-h-11 items-center px-3 py-2 text-[14px] font-medium transition-colors"
+                >
+                  {item.label}
+                </Link>
               ))}
+              <a
+                href="/#mechanism"
+                onClick={close}
+                className="flex min-h-11 items-center px-3 py-2 text-[14px] font-medium text-steel transition-colors hover:bg-highlight hover:text-ink"
+              >
+                How it works
+              </a>
+              <a
+                href="/#access"
+                onClick={close}
+                className="flex min-h-11 items-center px-3 py-2 text-[14px] font-medium text-steel transition-colors hover:bg-highlight hover:text-ink"
+              >
+                Access
+              </a>
             </nav>
+
+            <Link
+              to="/admin"
+              onClick={close}
+              className="mt-3 flex min-h-11 items-center justify-between border border-rule px-3 py-2 text-[13px] font-medium text-steel transition-colors hover:border-steel/50 hover:text-ink"
+            >
+              Editorial
+              <ShieldCheck className="size-4" />
+            </Link>
+
+            <div className="mt-auto space-y-3 border-t border-rule pt-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[12px] text-mist">Theme</span>
+                <ThemeToggle />
+              </div>
+              <p className="font-mono text-[9px] leading-relaxed text-mist">
+                Press <kbd className="border border-rule bg-surface-2 px-1">f</kbd> in a case for
+                focus mode.
+              </p>
+            </div>
           </div>
         </div>
       )}
     </>
-  );
-}
-
-function NavLink({ item, onNavigate }: { item: SiteNavItem; onNavigate?: () => void }) {
-  return (
-    <Link
-      to={item.to}
-      onClick={onNavigate}
-      activeOptions={{ exact: item.to === "/" }}
-      activeProps={{ className: "bg-ink text-paper ring-ink/15" }}
-      inactiveProps={{ className: "text-steel ring-transparent hover:bg-white/60" }}
-      className="block min-h-11 rounded-lg px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] ring-1 transition"
-    >
-      {item.label}
-    </Link>
   );
 }

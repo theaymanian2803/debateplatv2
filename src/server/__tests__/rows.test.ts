@@ -33,6 +33,28 @@ describe("rows round-trip", () => {
     );
   });
 
+  it("round-trips fetched scripture metadata", () => {
+    const data = seedData();
+    const scripture = {
+      provider: "free-use" as const,
+      translationId: "BSB",
+      translationLabel: "Berean Standard Bible",
+      reference: "John 3:16",
+      fetchedAt: "2026-10-23T00:00:00.000Z",
+      attribution: "Berean Standard Bible · Public domain",
+    };
+    data.entries[0] = { ...data.entries[0]!, scripture };
+    const roundTripped = rowsToAdminData(adminDataToRows(data));
+    expect(roundTripped.entries[0]!.scripture).toEqual(scripture);
+  });
+
+  it("ignores empty scripture defaults from older rows", () => {
+    const data = seedData();
+    const rows = adminDataToRows(data);
+    rows.entries[0]!["scripture"] = "{}";
+    expect(rowsToAdminData(rows).entries[0]!.scripture).toBeUndefined();
+  });
+
   it("handles an empty corpus", () => {
     const data = seedData();
     data.entries = [];

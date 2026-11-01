@@ -9,16 +9,16 @@ import { Button, EmptyRow, Field, Input, Panel, Select, Textarea } from "@/compo
 export const Route = createFileRoute("/admin/commentaries")({
   head: () => ({
     meta: [
-      { title: "Commentary & references — Scholia Admin" },
+      { title: "Commentary & references — Docket Editorial" },
       {
         name: "description",
         content:
-          "Attach scholarly commentaries to a primary entry with author, book, volume and page, and publication reference.",
+          "Attach scholarly commentary to a case with author, book, volume and page, and publication reference.",
       },
-      { property: "og:title", content: "Commentary & references — Scholia Admin" },
+      { property: "og:title", content: "Commentary & references — Docket Editorial" },
       {
         property: "og:description",
-        content: "Attach scholarly commentaries and references to corpus entries.",
+        content: "Attach scholarly commentary and references to cases.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -59,7 +59,7 @@ function CommentaryPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-4">
-      <Panel title="Primary entry" subtitle="Commentaries below are attached to this entry">
+      <Panel title="Case" subtitle="Commentary below is attached to this case">
         <Select value={entryId} onChange={(e) => setEntryId(e.target.value)}>
           {data.entries.map((e) => (
             <option key={e.id} value={e.id}>
@@ -115,7 +115,7 @@ function CommentaryPage() {
               </Field>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Publication / source reference">
+              <Field label="Publication / archive reference">
                 <Input
                   value={draft.sourceRef}
                   onChange={(e) => set("sourceRef", e.target.value)}
@@ -137,11 +137,11 @@ function CommentaryPage() {
           </div>
         </Panel>
 
-        <Panel title="Attached commentaries" subtitle={`${attached.length} on this entry`}>
+        <Panel title="Attached commentary" subtitle={`${attached.length} on this case`}>
           <ul className="space-y-2">
             {attached.length === 0 && <EmptyRow>No commentary attached yet.</EmptyRow>}
             {attached.map((c) => (
-              <li key={c.id} className="rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75">
+              <li key={c.id} className="bg-surface px-3.5 py-3 ring-1 ring-rule">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="truncate font-serif text-[14px]">{c.scholar}</div>

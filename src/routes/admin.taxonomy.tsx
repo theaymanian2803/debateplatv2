@@ -15,14 +15,14 @@ import { Button, EmptyRow, Field, Input, Panel } from "@/components/admin/ui";
 export const Route = createFileRoute("/admin/taxonomy")({
   head: () => ({
     meta: [
-      { title: "Taxonomy — Scholia Admin" },
+      { title: "Taxonomy — Docket Editorial" },
       {
         name: "description",
         content:
-          "Organise the categories, sub-categories, and tags that structure the Scholia debate corpus.",
+          "Organise the categories, sub-categories, and tags that structure the Docket record.",
       },
-      { property: "og:title", content: "Taxonomy — Scholia Admin" },
-      { property: "og:description", content: "Manage categories and tags in the Scholia corpus." },
+      { property: "og:title", content: "Taxonomy — Docket Editorial" },
+      { property: "og:description", content: "Manage categories and tags in the Docket record." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -108,7 +108,7 @@ function TaxonomyPage() {
         ) : (
           <ul className="space-y-2">
             {data.categories.map((c) => (
-              <li key={c.id} className="rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75">
+              <li key={c.id} className="bg-surface px-3.5 py-3 ring-1 ring-rule">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
                     <span className="font-serif text-[14px]">{c.label}</span>
@@ -153,7 +153,7 @@ function TaxonomyPage() {
                   {c.subs.map((s) => (
                     <span
                       key={s}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2.5 py-1 font-mono text-[10px] text-steel ring-1 ring-white/80"
+                      className="inline-flex items-center gap-1.5 border border-rule bg-surface-2 px-2.5 py-1 font-mono text-[9.5px] text-steel"
                     >
                       {s}
                       <button
@@ -190,7 +190,7 @@ function TaxonomyPage() {
         )}
       </Panel>
 
-      <Panel title="Tags" subtitle={`${data.tags.length} tags across the corpus`}>
+      <Panel title="Tags" subtitle={`${data.tags.length} tags across the record`}>
         <Field label="Add a tag">
           <div className="flex gap-2">
             <Input
@@ -217,7 +217,7 @@ function TaxonomyPage() {
             {data.tags.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2.5 py-1 font-mono text-[10px] text-steel ring-1 ring-white/80"
+                className="inline-flex items-center gap-1.5 border border-rule bg-surface-2 px-2.5 py-1 font-mono text-[9.5px] text-steel"
               >
                 {t}
                 <span className="text-mist">{tagCount(t)}</span>

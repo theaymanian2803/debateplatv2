@@ -75,6 +75,7 @@ export function adminToEntries(admin: AdminData): Entry[] {
       map: e.map,
       translations: e.translations,
       related: e.related,
+      scripture: e.scripture,
     } satisfies Entry;
   });
 }

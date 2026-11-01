@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Lock, Menu, X } from "lucide-react";
+import { ArrowUpRight, Lock, Menu, Search, ShieldCheck, X } from "lucide-react";
 import {
   AdminContext,
   seedData,
@@ -12,10 +12,11 @@ import {
 import { getCorpus, resetCorpus } from "@/lib/corpus-api";
 import { authState, login, logout } from "@/lib/auth-api";
 import { Input } from "@/components/admin/ui";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
-const title = "Scholia Admin — Corpus & citation management";
+const title = "Docket Editorial — Case management";
 const description =
-  "Manage primary entries, scholarly commentaries, rebuttals, verified sources, and the taxonomy behind the Scholia debate corpus.";
+  "Manage cases, commentary, rebuttals, sources, and the taxonomy behind the Docket record.";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -34,15 +35,29 @@ export const Route = createFileRoute("/admin")({
 
 const nav = [
   { to: "/admin", label: "Overview", exact: true },
-  { to: "/admin/entries", label: "Primary entries" },
+  { to: "/admin/entries", label: "Cases" },
   { to: "/admin/commentaries", label: "Commentary" },
   { to: "/admin/rebuttals", label: "Rebuttals" },
-  { to: "/admin/sources", label: "Source registry" },
-  { to: "/admin/requests", label: "Source requests" },
+  { to: "/admin/sources", label: "Sources" },
+  { to: "/admin/requests", label: "Requests" },
+  { to: "/admin/waitlist", label: "Access requests" },
   { to: "/admin/paths", label: "Reading paths" },
   { to: "/admin/taxonomy", label: "Taxonomy" },
+  { to: "/admin/database", label: "Database" },
   { to: "/admin/activity", label: "Activity" },
 ] as const;
+
+function Mark({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`relative flex size-8 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink font-display text-[15px] leading-none font-semibold text-paper ${className}`}
+    >
+      <span className="absolute inset-x-0 top-0 h-[3px] bg-brass" />
+      <span className="mt-0.5">D</span>
+    </span>
+  );
+}
 
 function AdminLayout() {
   const { data } = useQuery({ queryKey: ["corpus"], queryFn: getCorpus });
@@ -57,8 +72,8 @@ function AdminLayout() {
   });
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setNavOpen(false);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setNavOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -83,12 +98,16 @@ function AdminLayout() {
 
   const results = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    if (needle.length < 2 || !data) return null;
-    const hit = (s: string) => s.toLowerCase().includes(needle);
+    if (!needle || !data) return null;
+    const hit = (value: string) => value.toLowerCase().includes(needle);
     return {
-      entries: data.entries.filter((e) => hit(e.title) || hit(e.originalText) || hit(e.reference)),
-      commentaries: data.commentaries.filter((c) => hit(c.scholar) || hit(c.text) || hit(c.book)),
-      sources: data.sources.filter((s) => hit(s.label) || hit(s.detail)),
+      entries: data.entries.filter(
+        (entry) => hit(entry.title) || hit(entry.originalText) || hit(entry.reference),
+      ),
+      commentaries: data.commentaries.filter(
+        (commentary) => hit(commentary.scholar) || hit(commentary.text) || hit(commentary.book),
+      ),
+      sources: data.sources.filter((source) => hit(source.label) || hit(source.detail)),
     };
   }, [q, data]);
 
@@ -102,29 +121,29 @@ function AdminLayout() {
 
   return (
     <AdminContext.Provider value={store}>
-      <div className="relative min-h-dvh w-full overflow-hidden bg-gradient-to-b from-[oklch(0.965_0.008_255)] via-[oklch(0.945_0.012_255)] to-[oklch(0.905_0.02_258)] font-sans text-ink">
-        <div className="pointer-events-none absolute -top-24 -left-24 size-[420px] rounded-full bg-[oklch(0.84_0.05_262)]/40 blur-3xl" />
-        <div className="pointer-events-none absolute top-1/3 -right-32 size-[460px] rounded-full bg-[oklch(0.88_0.03_262)]/50 blur-3xl" />
-
+      <div className="min-h-dvh w-full bg-canvas font-sans text-ink">
         {navOpen && (
           <div className="fixed inset-0 z-40 md:hidden">
             <button
               aria-label="Close menu"
               onClick={() => setNavOpen(false)}
-              className="absolute inset-0 bg-ink/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-ink/30"
             />
-            <div className="absolute inset-y-0 left-0 flex w-64 max-w-[85vw] flex-col border-r border-white/60 bg-white/70 px-4 py-5 shadow-2xl backdrop-blur-xl">
-              <div className="flex items-center justify-between px-2">
-                <div>
-                  <div className="font-serif text-lg leading-none font-medium">Scholia</div>
-                  <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-mist">
-                    Editorial desk
+            <div className="absolute inset-y-0 left-0 flex w-64 max-w-[85vw] flex-col border-r border-rule bg-surface px-4 py-5 shadow-xl">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2.5">
+                  <Mark />
+                  <div>
+                    <div className="font-sidebar text-[16px] leading-none font-bold tracking-[-0.02em]">
+                      Docket
+                    </div>
+                    <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
                   </div>
                 </div>
                 <button
                   onClick={() => setNavOpen(false)}
                   aria-label="Close menu"
-                  className="rounded-md p-2 text-steel transition-colors hover:bg-white/60"
+                  className="p-2 text-steel transition-colors hover:bg-highlight hover:text-ink"
                 >
                   <X className="size-4" />
                 </button>
@@ -134,36 +153,42 @@ function AdminLayout() {
           </div>
         )}
 
-        <div className="relative flex min-h-dvh">
-          <aside className="hidden w-60 shrink-0 flex-col border-r border-white/60 bg-white/25 px-4 py-5 backdrop-blur-xl md:flex">
-            <div className="px-2">
-              <div className="font-serif text-lg leading-none font-medium">Scholia</div>
-              <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-mist">
-                Editorial desk
+        <div className="flex min-h-dvh">
+          <aside className="hidden w-60 shrink-0 flex-col border-r border-rule bg-surface md:flex">
+            <div className="border-b border-rule px-5 py-5">
+              <div className="flex items-center gap-2.5">
+                <Mark />
+                <div>
+                  <div className="font-display text-[16px] leading-none font-semibold">Docket</div>
+                  <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
+                </div>
               </div>
             </div>
-
             <AdminNav />
           </aside>
 
           <div className="flex min-w-0 flex-1 flex-col">
-            <header className="sticky top-0 z-20 border-b border-white/60 bg-white/35 px-4 py-3 backdrop-blur-xl sm:px-6">
-              <div className="flex flex-wrap items-center gap-3">
+            <header className="sticky top-0 z-20 border-b border-rule bg-canvas px-4 py-2.5 sm:px-6">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => setNavOpen(true)}
                   aria-label="Open menu"
-                  className="-ml-2 rounded-md p-2 text-ink transition-colors hover:bg-white/50 md:hidden"
+                  className="p-2 text-ink transition-colors hover:bg-highlight md:hidden"
                 >
                   <Menu className="size-5" />
                 </button>
+
                 <div className="relative min-w-0 flex-1">
+                  <Search className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-mist" />
                   <Input
                     value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Search entries, scholars, references…"
+                    onChange={(event) => setQ(event.target.value)}
+                    placeholder="Search cases, sources, references…"
+                    className="pl-9"
+                    aria-label="Search the editorial desk"
                   />
                   {results && (
-                    <div className="absolute top-full left-0 z-30 mt-2 max-h-80 w-full overflow-auto rounded-xl bg-white/90 p-2 ring-1 ring-white/80 shadow-lg backdrop-blur-xl">
+                    <div className="absolute top-full left-0 z-30 mt-2 max-h-80 w-full overflow-auto border border-rule bg-surface p-2 shadow-lg">
                       {results.entries.length +
                         results.commentaries.length +
                         results.sources.length ===
@@ -171,14 +196,16 @@ function AdminLayout() {
                         <p className="px-2 py-3 text-[12px] text-mist">No matches.</p>
                       ) : (
                         <>
-                          <ResultGroup label="Entries" to="/admin/entries">
-                            {results.entries.map((e) => e.title)}
+                          <ResultGroup label="Cases" to="/admin/entries">
+                            {results.entries.map((entry) => entry.title)}
                           </ResultGroup>
                           <ResultGroup label="Commentary" to="/admin/commentaries">
-                            {results.commentaries.map((c) => `${c.scholar} — ${c.book}`)}
+                            {results.commentaries.map(
+                              (commentary) => `${commentary.scholar} — ${commentary.book}`,
+                            )}
                           </ResultGroup>
                           <ResultGroup label="Sources" to="/admin/sources">
-                            {results.sources.map((s) => s.label)}
+                            {results.sources.map((source) => source.label)}
                           </ResultGroup>
                         </>
                       )}
@@ -186,24 +213,27 @@ function AdminLayout() {
                   )}
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="ml-auto flex shrink-0 items-center gap-2">
+                  <span className="hidden sm:inline-flex">
+                    <ThemeToggle />
+                  </span>
                   <Link
                     to="/admin/entries"
-                    className="rounded-lg bg-ink px-3 py-2 text-[12px] font-medium text-paper ring-1 ring-ink/10 hover:opacity-90"
+                    className="border border-ink bg-ink px-3 py-2 text-[12px] font-medium text-paper transition-opacity hover:opacity-90"
                   >
-                    + New entry
+                    + New case
                   </Link>
                   <Link
                     to="/admin/sources"
-                    className="hidden rounded-lg bg-white/60 px-3 py-2 text-[12px] font-medium text-steel ring-1 ring-white/80 hover:bg-white/85 sm:inline-block"
+                    className="hidden border border-rule bg-surface px-3 py-2 text-[12px] font-medium text-steel transition-colors hover:border-steel/50 hover:text-ink lg:inline-block"
                   >
-                    + New reference
+                    + New source
                   </Link>
                 </div>
               </div>
             </header>
 
-            <div className="min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-6">
+            <div className="min-w-0 flex-1 px-4 py-6 sm:px-6 sm:py-7">
               <Outlet />
             </div>
           </div>
@@ -215,10 +245,12 @@ function AdminLayout() {
 
 function AdminLoading() {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-b from-[oklch(0.965_0.008_255)] to-[oklch(0.905_0.02_258)] font-sans text-ink">
-      <p className="rounded-2xl bg-white/50 px-6 py-8 text-center font-serif text-[15px] text-steel ring-1 ring-white/70 backdrop-blur-xl">
-        Checking access…
-      </p>
+    <div className="flex min-h-dvh items-center justify-center bg-canvas px-4 font-sans text-ink">
+      <div className="w-full max-w-sm space-y-3 border border-rule bg-surface p-6">
+        <div className="h-3 w-24 animate-pulse bg-surface-2" />
+        <div className="h-8 w-full animate-pulse bg-surface-2" />
+        <div className="h-8 w-2/3 animate-pulse bg-surface-2" />
+      </div>
     </div>
   );
 }
@@ -229,16 +261,16 @@ function AdminLogin({ configured }: { configured: boolean }) {
   const [error, setError] = useState<string | null>(null);
 
   const submit = useMutation({
-    mutationFn: (pw: string) => login({ data: pw }),
-    onSuccess: (res) => {
-      if (res.ok) {
+    mutationFn: (value: string) => login({ data: value }),
+    onSuccess: (result) => {
+      if (result.ok) {
         setPassword("");
         setError(null);
         void queryClient.invalidateQueries({ queryKey: ["auth"] });
       } else {
         setError(
-          res.reason === "not-configured"
-            ? "Admin access is not configured on this deployment."
+          result.reason === "not-configured"
+            ? "Editorial access is not configured on this deployment."
             : "Incorrect password.",
         );
       }
@@ -247,57 +279,54 @@ function AdminLogin({ configured }: { configured: boolean }) {
   });
 
   return (
-    <div className="relative flex min-h-dvh w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[oklch(0.965_0.008_255)] via-[oklch(0.945_0.012_255)] to-[oklch(0.905_0.02_258)] px-4 font-sans text-ink">
-      <div className="pointer-events-none absolute -top-24 -left-24 size-[420px] rounded-full bg-[oklch(0.84_0.05_262)]/40 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/3 -right-32 size-[460px] rounded-full bg-[oklch(0.88_0.03_262)]/50 blur-3xl" />
-
-      <div className="w-full max-w-sm rounded-2xl bg-white/50 p-8 ring-1 ring-white/70 shadow-xl backdrop-blur-xl">
+    <div className="flex min-h-dvh w-full items-center justify-center bg-canvas px-4 font-sans text-ink">
+      <div className="w-full max-w-sm border border-rule bg-surface p-8">
         <div className="flex items-center gap-3">
-          <span className="rounded-lg bg-ink p-2 text-paper">
-            <Lock className="size-4" />
-          </span>
+          <Mark className="size-10 text-[18px]" />
           <div>
-            <div className="font-serif text-lg leading-none font-medium">Scholia</div>
-            <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-mist">
-              Editorial desk
+            <div className="font-sidebar text-[17px] leading-none font-bold tracking-[-0.02em]">
+              Docket
             </div>
+            <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
           </div>
         </div>
 
-        <p className="mt-6 text-[13px] leading-relaxed text-steel">
-          This area is restricted to the editorial team. Enter the admin password to continue.
+        <p className="mt-6 flex items-start gap-2 text-[13px] leading-relaxed text-steel">
+          <Lock className="mt-0.5 size-3.5 shrink-0 text-brass" />
+          This area is reserved for the editorial team. Enter the password to continue.
         </p>
 
         <form
           className="mt-5 space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault();
+          onSubmit={(event) => {
+            event.preventDefault();
             if (password.trim()) submit.mutate(password);
           }}
         >
           <Input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Admin password"
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Editorial password"
             autoFocus
-            aria-label="Admin password"
+            aria-label="Editorial password"
           />
-          {error && <p className="text-[12px] text-[oklch(0.5_0.15_25)]">{error}</p>}
+          {error && <p className="text-[12px] text-dispute">{error}</p>}
           <button
             type="submit"
             disabled={submit.isPending || !password.trim()}
-            className="w-full rounded-lg bg-ink px-3 py-2.5 text-[13px] font-medium text-paper ring-1 ring-ink/10 transition-opacity hover:opacity-90 disabled:opacity-40"
+            className="w-full border border-ink bg-ink px-3 py-2.5 text-[13px] font-medium text-paper transition-opacity hover:opacity-90 disabled:opacity-40"
           >
-            {submit.isPending ? "Signing in…" : "Enter editorial desk"}
+            {submit.isPending ? "Signing in…" : "Enter the editorial desk"}
           </button>
         </form>
 
         <Link
-          to="/"
-          className="mt-5 block text-center text-[12px] text-mist transition-colors hover:text-steel"
+          to="/cases"
+          className="mt-5 flex items-center justify-center gap-1 text-[12px] text-mist transition-colors hover:text-ink"
         >
-          Back to the reading room
+          Back to the public docket
+          <ArrowUpRight className="size-3" />
         </Link>
       </div>
     </div>
@@ -313,41 +342,47 @@ function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
   });
   return (
     <>
-      <nav className="mt-6 space-y-1">
-        {nav.map((n) => (
+      <nav aria-label="Editorial sections" className="mt-4 flex-1 space-y-0.5 overflow-y-auto px-3">
+        {nav.map((item) => (
           <Link
-            key={n.to}
-            to={n.to}
-            activeOptions={{ exact: "exact" in n ? n.exact : false }}
-            activeProps={{ className: "bg-ink text-paper ring-ink/15" }}
-            inactiveProps={{ className: "text-steel ring-transparent hover:bg-white/60" }}
+            key={item.to}
+            to={item.to}
+            activeOptions={{ exact: "exact" in item ? item.exact : false }}
+            activeProps={{ className: "bg-ink text-paper" }}
+            inactiveProps={{ className: "text-steel hover:bg-highlight hover:text-ink" }}
             onClick={onNavigate}
-            className="block rounded-lg px-3 py-2 text-[13px] ring-1 transition"
+            className="block px-3 py-2 font-sidebar text-[11px] font-semibold tracking-[-0.02em] transition-colors"
           >
-            {n.label}
+            {item.label}
           </Link>
         ))}
       </nav>
 
-      <div className="mt-auto space-y-2 px-1 pt-6">
+      <div className="mt-auto space-y-1.5 border-t border-rule p-3">
+        <div className="flex items-center justify-between px-1 pb-2">
+          <span className="text-[11px] text-mist">Theme</span>
+          <ThemeToggle />
+        </div>
         <Link
-          to="/"
+          to="/cases"
           onClick={onNavigate}
-          className="block rounded-lg bg-white/60 px-3 py-2 text-center text-[12px] text-steel ring-1 ring-white/80 hover:bg-white/85"
+          className="flex items-center justify-between border border-rule bg-surface px-3 py-2 text-[12px] text-steel transition-colors hover:border-steel/50 hover:text-ink"
         >
-          View public reading room
+          Public docket
+          <ArrowUpRight className="size-3.5" />
         </Link>
         <button
           onClick={() => signOut.mutate()}
-          className="w-full rounded-lg bg-white/60 px-3 py-2 text-[12px] text-steel ring-1 ring-white/80 hover:bg-white/85"
+          className="w-full border border-rule bg-surface px-3 py-2 text-left text-[12px] text-steel transition-colors hover:border-steel/50 hover:text-ink"
         >
           Sign out
         </button>
         <button
           onClick={() => reset()}
-          className="w-full rounded-lg px-3 py-2 text-[11px] text-mist hover:text-steel"
+          className="flex w-full items-center gap-1.5 px-3 py-2 text-left font-mono text-[9.5px] text-mist transition-colors hover:bg-highlight hover:text-ink"
         >
-          Reset to sample corpus
+          <ShieldCheck className="size-3.5" />
+          Reset to sample docket
         </button>
       </div>
     </>
@@ -366,14 +401,12 @@ function ResultGroup({
   if (children.length === 0) return null;
   return (
     <div className="mb-1">
-      <div className="px-2 pt-1.5 pb-1 font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
-        {label}
-      </div>
-      {children.slice(0, 5).map((text, i) => (
+      <div className="px-2 pt-1.5 pb-1 font-mono text-[9px] text-mist">{label}</div>
+      {children.slice(0, 5).map((text, index) => (
         <Link
-          key={`${label}-${i}`}
+          key={`${label}-${index}`}
           to={to}
-          className="block truncate rounded-md px-2 py-1.5 text-[12.5px] text-ink hover:bg-white"
+          className="block truncate px-2 py-1.5 text-[12.5px] text-ink transition-colors hover:bg-highlight"
         >
           {text}
         </Link>

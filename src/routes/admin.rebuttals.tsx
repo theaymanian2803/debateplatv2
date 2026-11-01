@@ -9,16 +9,16 @@ import { Button, EmptyRow, Field, Input, Panel, Select, Textarea } from "@/compo
 export const Route = createFileRoute("/admin/rebuttals")({
   head: () => ({
     meta: [
-      { title: "Rebuttals — Scholia Admin" },
+      { title: "Rebuttals — Docket Editorial" },
       {
         name: "description",
         content:
-          "Record counter-arguments and rebuttals against primary entries with a side-by-side preview of the source text.",
+          "Record rebuttals and replies against cases with a side-by-side preview of the claim.",
       },
-      { property: "og:title", content: "Rebuttals — Scholia Admin" },
+      { property: "og:title", content: "Rebuttals — Docket Editorial" },
       {
         property: "og:description",
-        content: "Record and review rebuttals in the Scholia corpus.",
+        content: "Record and review rebuttals in the Docket record.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -63,7 +63,7 @@ function RebuttalsPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-4">
-      <Panel title="Primary entry" subtitle="Rebuttals below are attached to this entry">
+      <Panel title="Case" subtitle="Rebuttals below are attached to this case">
         <Select value={entryId} onChange={(e) => setEntryId(e.target.value)}>
           {data.entries.map((e) => (
             <option key={e.id} value={e.id}>
@@ -85,17 +85,13 @@ function RebuttalsPage() {
         <Panel title="Side-by-side preview" {...(entry ? { subtitle: entry.title } : {})}>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
-                Primary text
-              </div>
+              <div className="font-mono text-[10px] text-mist">Primary text</div>
               <p className="mt-2 font-serif text-[13.5px] leading-relaxed text-ink">
-                {entry?.originalText ?? "Select an entry above."}
+                {entry?.originalText ?? "Select a case above."}
               </p>
             </div>
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
-                Rebuttal
-              </div>
+              <div className="font-mono text-[10px] text-mist">Rebuttal</div>
               {preview ? (
                 <>
                   <div className="mt-2 flex items-start justify-between gap-2">
@@ -119,11 +115,11 @@ function RebuttalsPage() {
           </div>
         </Panel>
 
-        <Panel title="Rebuttals on this entry" subtitle={`${attached.length} on file`}>
+        <Panel title="Rebuttals on this case" subtitle={`${attached.length} on file`}>
           <ul className="space-y-2">
             {attached.length === 0 && <EmptyRow>No rebuttals recorded yet.</EmptyRow>}
             {attached.map((r) => (
-              <li key={r.id} className="rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75">
+              <li key={r.id} className="bg-surface px-3.5 py-3 ring-1 ring-rule">
                 <div className="flex items-start justify-between gap-3">
                   <button
                     type="button"
@@ -211,7 +207,7 @@ function RebuttalsPage() {
                 placeholder="e.g. Whatever is not subject to our command is indifferent to the will."
               />
             </Field>
-            <Field label="Backing" hint="Authority or evidence behind the warrant.">
+            <Field label="Backing" hint="Evidence behind the ground.">
               <Textarea
                 rows={2}
                 value={draft.backing}
@@ -230,7 +226,7 @@ function RebuttalsPage() {
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Counter references" hint="Sources the rebuttal leans on.">
+            <Field label="Reply references" hint="Sources the rebuttal leans on.">
               <Input
                 value={draft.counterRefs}
                 onChange={(e) => set("counterRefs", e.target.value)}

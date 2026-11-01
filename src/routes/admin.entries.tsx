@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { uid, useAdmin, type AdminEntry } from "@/lib/admin-store";
 import { deleteEntry, upsertEntry, upsertTag } from "@/lib/corpus-api";
+import type { ScriptureResult } from "@/lib/scripture";
+import { containsArabic } from "@/lib/scripture";
+import { ScriptureLookup } from "@/components/admin/ScriptureLookup";
 import {
   Button,
   EmptyRow,
@@ -16,16 +19,16 @@ import {
 export const Route = createFileRoute("/admin/entries")({
   head: () => ({
     meta: [
-      { title: "Primary entries — Scholia Admin" },
+      { title: "Cases — Docket Editorial" },
       {
         name: "description",
         content:
-          "Add and edit sacred-text verses and philosophical premises with original text, translation, category, and cross-reference tags.",
+          "Add and edit texts and claims with original text, translation, category, and cross-reference tags.",
       },
-      { property: "og:title", content: "Primary entries — Scholia Admin" },
+      { property: "og:title", content: "Cases — Docket Editorial" },
       {
         property: "og:description",
-        content: "Add and edit verses and premises in the Scholia corpus.",
+        content: "Add and edit texts and claims in the Docket record.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -69,8 +72,8 @@ function EntriesPage() {
   return (
     <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1fr_1fr]">
       <Panel
-        title={editingId ? "Edit primary entry" : "New primary entry"}
-        subtitle="Verses and philosophical premises"
+        title={editingId ? "Edit Case" : "New Case"}
+        subtitle="Texts and claims"
         action={
           editingId ? (
             <Button
@@ -92,20 +95,106 @@ function EntriesPage() {
                 value={draft.kind}
                 onChange={(e) => set("kind", e.target.value as AdminEntry["kind"])}
               >
-                <option value="verse">Verse</option>
-                <option value="premise">Premise</option>
+                <option value="verse">Text</option>
+                <option value="premise">Claim</option>
               </Select>
             </Field>
-            <Field label="Chapter / section reference">
+            <Field
+              label="Chapter / section reference"
+              hint="Bible, Sefaria, Quran, or Hadith references can be fetched below."
+            >
               <Input
                 value={draft.reference}
                 onChange={(e) => set("reference", e.target.value)}
-                placeholder="e.g. Discourses IV.1"
+                placeholder="John 17:3, Berakhot 2a, 17:3, Bukhari 2:1"
               />
             </Field>
           </div>
 
-          <Field label="Entry title">
+          <ScriptureLookup
+            reference={draft.reference}
+            meta={draft.scripture}
+            onReferenceChange={(value) => set("reference", value)}
+            onApplyCommentary={(result) => {
+              const section = {
+                id: uid("sec"),
+                title: `${result.translationLabel} - ${result.reference}`,
+                body: result.text,
+                citations: [
+                  {
+                    id: uid("cit"),
+                    label: result.translationLabel,
+                    detail: `${result.reference} - ${result.translationLabel}`,
+                    status: "unverified" as const,
+                    archive: result.attribution ?? "Fetched source",
+                  },
+                ],
+              };
+              setDraft((d) => ({ ...d, sections: [...d.sections, section] }));
+            }}
+            onApply={(result: ScriptureResult) => {
+              const {
+                text: _text,
+                verses: _verses,
+                secondaryText: _secondary,
+                textDirection: _textDirection,
+                ...meta
+              } = result;
+              setDraft((d) => ({
+                ...d,
+                reference: result.reference,
+                originalText: result.secondaryText ?? result.text,
+                translation: result.secondaryText ? result.text : d.translation,
+                title: d.title.trim()
+                  ? d.title
+                  : result.provider === "hadith"
+                    ? result.reference
+                    : `${result.reference} - ${result.translationLabel}`,
+                scripture: meta,
+              }));
+            }}
+          />
+
+          <details className="border border-rule bg-surface-2/30">
+            <summary className="cursor-pointer list-none px-3 py-2.5 font-mono text-[10px] text-steel transition-colors hover:bg-highlight [&::-webkit-details-marker]:hidden">
+              Attached commentary ({draft.sections.length})
+            </summary>
+            <div className="space-y-2 border-t border-rule p-3">
+              {draft.sections.length === 0 ? (
+                <EmptyRow>No commentary yet.</EmptyRow>
+              ) : (
+                draft.sections.map((section) => (
+                  <div
+                    key={section.id}
+                    className="flex items-start justify-between gap-3 border border-rule bg-surface px-3 py-2"
+                  >
+                    <div className="min-w-0">
+                      <div className="truncate font-serif text-[13.5px] text-ink">
+                        {section.title}
+                      </div>
+                      <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-relaxed text-mist">
+                        {section.body}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        set(
+                          "sections",
+                          draft.sections.filter((s) => s.id !== section.id),
+                        )
+                      }
+                      className="shrink-0 px-2 py-1 font-mono text-[10px] text-mist transition-colors hover:bg-highlight hover:text-dispute"
+                    >
+                      remove
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </details>
+
+          <Field label="Case title">
             <Input
               value={draft.title}
               onChange={(e) => set("title", e.target.value)}
@@ -116,28 +205,40 @@ function EntriesPage() {
           <Field label="Original text">
             <Textarea
               rows={4}
+              dir="auto"
               value={draft.originalText}
               onChange={(e) => set("originalText", e.target.value)}
+              className={
+                containsArabic(draft.originalText)
+                  ? "font-arabic text-[15px] leading-[2]"
+                  : undefined
+              }
             />
           </Field>
 
           <Field label="Official translation">
             <Textarea
               rows={3}
+              dir="auto"
               value={draft.translation}
               onChange={(e) => set("translation", e.target.value)}
+              className={
+                containsArabic(draft.translation)
+                  ? "font-arabic text-[15px] leading-[2]"
+                  : undefined
+              }
             />
           </Field>
 
           <Field
             label="Alternate translations"
-            hint="Optional secondary translations shown side-by-side in the reading room."
+            hint="Optional secondary translations shown beside the claim in the case file."
           >
             <div className="space-y-2">
               {draft.translations.map((t, i) => (
                 <div
                   key={i}
-                  className="flex flex-col gap-2 rounded-lg bg-white/40 p-2.5 ring-1 ring-white/70 sm:flex-row"
+                  className="flex flex-col gap-2 bg-surface-2 p-2.5 ring-1 ring-rule sm:flex-row"
                 >
                   <Input
                     value={t.label}
@@ -185,7 +286,7 @@ function EntriesPage() {
 
           <Field
             label="Intertextual cross-references"
-            hint="Link this entry to other verses or premises."
+            hint="Link this case to other texts or claims."
           >
             <div className="flex flex-wrap gap-1.5">
               {data.entries
@@ -202,10 +303,10 @@ function EntriesPage() {
                           on ? draft.related.filter((x) => x !== e.id) : [...draft.related, e.id],
                         )
                       }
-                      className={`rounded-full px-2.5 py-1 font-mono text-[10px] ring-1 transition ${
+                      className={`px-2.5 py-1 font-mono text-[10px] ring-1 transition ${
                         on
                           ? "bg-ink text-paper ring-ink/20"
-                          : "bg-white/60 text-steel ring-white/80 hover:bg-white/85"
+                          : "bg-surface text-steel ring-rule hover:bg-surface"
                       }`}
                     >
                       {e.title}
@@ -249,22 +350,27 @@ function EntriesPage() {
             />
           </Field>
 
-          <Button onClick={save}>{editingId ? "Save changes" : "Add entry"}</Button>
+          <Button onClick={save}>{editingId ? "Save changes" : "Add case"}</Button>
         </div>
       </Panel>
 
-      <Panel title="Corpus entries" subtitle={`${data.entries.length} on file`}>
+      <Panel title="Cases" subtitle={`${data.entries.length} on file`}>
         <ul className="space-y-2">
           {data.entries.length === 0 && <EmptyRow>No entries yet.</EmptyRow>}
           {data.entries.map((e) => (
-            <li key={e.id} className="rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75">
+            <li key={e.id} className="bg-surface px-3.5 py-3 ring-1 ring-rule">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="truncate font-serif text-[14px] text-ink">{e.title}</div>
-                  <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
-                    {e.kind} · {e.category}
+                  <div className="mt-0.5 font-mono text-[10px] text-mist">
+                    {e.kind === "verse" ? "Text" : "Claim"} · {e.category}
                     {e.subCategory ? ` / ${e.subCategory}` : ""}
                   </div>
+                  {e.scripture && (
+                    <div className="mt-1 font-mono text-[9.5px] text-verify">
+                      {e.scripture.reference} · {e.scripture.translationLabel}
+                    </div>
+                  )}
                 </div>
                 <div className="flex shrink-0 gap-1.5">
                   <Button
@@ -292,7 +398,7 @@ function EntriesPage() {
                   {e.tags.map((t) => (
                     <span
                       key={t}
-                      className="rounded-full bg-white/70 px-2 py-0.5 font-mono text-[10px] text-steel ring-1 ring-white/80"
+                      className="border border-rule bg-surface-2 px-2 py-0.5 font-mono text-[9.5px] text-steel"
                     >
                       {t}
                     </span>

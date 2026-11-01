@@ -19,10 +19,24 @@ export function parseDevVarsFile(text: string): Record<string, string> {
 }
 
 export type CredentialSource = {
-  cloudflare?: Record<string, unknown>;
-  processEnv?: Record<string, string | undefined>;
-  readFile?: (path: string) => string | undefined;
+  cloudflare?: Record<string, unknown> | undefined;
+  processEnv?: Record<string, string | undefined> | undefined;
+  readFile?: ((path: string) => string | undefined) | undefined;
 };
+
+export function resolveEnvVar(src: CredentialSource, name: string): string | undefined {
+  const cf = src.cloudflare;
+  const fromCloudflare = cf?.[name];
+  if (typeof fromCloudflare === "string" && fromCloudflare) return fromCloudflare;
+  const fromProcess = src.processEnv?.[name];
+  if (fromProcess) return fromProcess;
+  const dev = src.readFile?.(".dev.vars");
+  if (dev) {
+    const vars = parseDevVarsFile(dev);
+    if (vars[name]) return vars[name];
+  }
+  return undefined;
+}
 
 export function resolveTursoCredentials(src: CredentialSource): { url: string; token: string } {
   const cf = src.cloudflare;

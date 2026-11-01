@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#E7E9E4"/>
+  <rect x="0" y="0" width="1200" height="10" fill="#A47A2F"/>
+  <rect x="64" y="64" width="64" height="64" fill="#161C1E"/>
+  <rect x="64" y="64" width="64" height="8" fill="#A47A2F"/>
+  <text x="96" y="112" fill="#FBFBF8" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700">D</text>
+  <text x="148" y="106" fill="#161C1E" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700">Docket</text>
+  <text x="64" y="286" fill="#161C1E" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700">Argument,</text>
+  <text x="64" y="372" fill="#161C1E" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700">on the record.</text>
+  <rect x="64" y="402" width="420" height="4" fill="#A47A2F"/>
+  <text x="64" y="458" fill="#43525A" font-family="Arial, Helvetica, sans-serif" font-size="23">Read the source, the commentary, the rebuttals,</text>
+  <text x="64" y="492" fill="#43525A" font-family="Arial, Helvetica, sans-serif" font-size="23">and see what the citations support.</text>
+  <text x="64" y="566" fill="#5F6C70" font-family="'Courier New', monospace" font-size="15" letter-spacing="2">CASE FILE · VERIFIED · DISPUTED · UNVERIFIED</text>
+  <rect x="878" y="218" width="258" height="258" fill="#F4F5F1" stroke="#C4CAC3" stroke-width="2"/>
+  <rect x="878" y="218" width="258" height="8" fill="#A47A2F"/>
+  <text x="898" y="268" fill="#5F6C70" font-family="'Courier New', monospace" font-size="12">DOCKET · NO. 0142</text>
+  <text x="898" y="312" fill="#161C1E" font-family="Georgia, 'Times New Roman', serif" font-size="27">Genesis 1:1–2</text>
+  <text x="898" y="344" fill="#43525A" font-family="Arial, Helvetica, sans-serif" font-size="15">On formlessness and the</text>
+  <text x="898" y="366" fill="#43525A" font-family="Arial, Helvetica, sans-serif" font-size="15">ordering of creation</text>
+  <rect x="898" y="392" width="218" height="1" fill="#C4CAC3"/>
+  <text x="898" y="424" fill="#5F6C70" font-family="'Courier New', monospace" font-size="11">STATUS</text>
+  <rect x="898" y="436" width="112" height="28" fill="none" stroke="#7A2430" stroke-width="2"/>
+  <text x="910" y="455" fill="#7A2430" font-family="'Courier New', monospace" font-size="12" font-weight="700">DISPUTED</text>
+</svg>

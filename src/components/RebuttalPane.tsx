@@ -1,6 +1,7 @@
 import type { Entry } from "@/lib/corpus";
-import { StatusBadge } from "./StatusBadge";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { containsArabic } from "@/lib/scripture";
+import { ArrowDown, ArrowUp, FileText } from "lucide-react";
+import { StatusBadge, StatusDot } from "./StatusBadge";
 
 export type VoteTallyUI = { up: number; down: number; mine: number };
 
@@ -13,140 +14,220 @@ export function RebuttalPane({
 }: {
   entry: Entry;
   activePerspective: string | null;
-  onPerspectiveChange: (p: string | null) => void;
+  onPerspectiveChange: (perspective: string | null) => void;
   votes?: Record<string, VoteTallyUI>;
   onVote?: (rebuttalId: string, direction: -1 | 0 | 1) => void;
 }) {
-  const perspectives = Array.from(new Set(entry.rebuttals.map((r) => r.perspective)));
+  const perspectives = Array.from(new Set(entry.rebuttals.map((rebuttal) => rebuttal.perspective)));
   const shown = activePerspective
-    ? entry.rebuttals.filter((r) => r.perspective === activePerspective)
+    ? entry.rebuttals.filter((rebuttal) => rebuttal.perspective === activePerspective)
     : entry.rebuttals;
+  const counts = new Map(
+    perspectives.map((perspective) => [
+      perspective,
+      entry.rebuttals.filter((rebuttal) => rebuttal.perspective === perspective).length,
+    ]),
+  );
 
   return (
-    <section className="flex flex-1 flex-col overflow-hidden bg-white/10 backdrop-blur-xl">
-      <div className="flex items-center gap-2 border-b border-white/60 px-4 py-2.5 sm:px-6">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">
-          Rebuttals by perspective
-        </span>
-        <div className="ml-auto flex flex-wrap gap-1">
-          {perspectives.map((p) => (
+    <section
+      aria-label="Rebuttals by perspective"
+      className="flex min-h-0 flex-1 flex-col overflow-hidden bg-canvas"
+    >
+      <div className="shrink-0 border-b border-rule bg-surface px-4 py-2.5 sm:px-5">
+        <div className="flex items-center gap-2">
+          <span className="font-display text-[13px] font-semibold text-ink">Rebuttals</span>
+          <span className="border border-rule bg-surface-2 px-1.5 py-0.5 font-mono text-[9.5px] tabular-nums text-steel">
+            {entry.rebuttals.length}
+          </span>
+        </div>
+        {perspectives.length > 0 && (
+          <div
+            className="mt-2 flex flex-wrap gap-1"
+            role="group"
+            aria-label="Filter rebuttals by perspective"
+          >
             <button
-              key={p}
-              onClick={() => onPerspectiveChange(activePerspective === p ? null : p)}
-              className={`min-h-8 rounded-md px-2.5 py-1 font-mono text-[10px] transition-colors ${
-                activePerspective === p
-                  ? "bg-white/60 text-ink ring-1 ring-white/70"
-                  : "text-mist hover:bg-white/50"
+              onClick={() => onPerspectiveChange(null)}
+              aria-pressed={activePerspective === null}
+              className={`border px-2 py-1 font-mono text-[10px] transition-colors ${
+                activePerspective === null
+                  ? "border-ink bg-ink text-paper"
+                  : "border-rule bg-surface text-steel hover:border-steel/50 hover:text-ink"
               }`}
             >
-              {p}
+              All <span className="opacity-60">{entry.rebuttals.length}</span>
             </button>
-          ))}
-        </div>
+            {perspectives.map((perspective) => (
+              <button
+                key={perspective}
+                onClick={() =>
+                  onPerspectiveChange(activePerspective === perspective ? null : perspective)
+                }
+                aria-pressed={activePerspective === perspective}
+                className={`border px-2 py-1 font-mono text-[10px] transition-colors ${
+                  activePerspective === perspective
+                    ? "border-ink bg-ink text-paper"
+                    : "border-rule bg-surface text-steel hover:border-steel/50 hover:text-ink"
+                }`}
+              >
+                <span className="max-w-[14rem] truncate">{perspective}</span>{" "}
+                <span className="opacity-60">{counts.get(perspective)}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6">
-        {shown.map((r) => {
-          const tally = votes?.[r.id] ?? { up: 0, down: 0, mine: 0 };
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {shown.length === 0 && (
+          <div className="m-4 flex flex-col items-center justify-center border border-dashed border-rule px-6 py-12 text-center">
+            <FileText className="size-6 text-mist" />
+            <p className="mt-2 font-display text-[15px] font-semibold text-ink">
+              No rebuttals recorded
+            </p>
+            <p className="mt-1 max-w-xs text-[12px] leading-relaxed text-mist">
+              Arguments from this perspective have not been entered in the editorial desk.
+            </p>
+          </div>
+        )}
+
+        {shown.map((rebuttal) => {
+          const tally = votes?.[rebuttal.id] ?? { up: 0, down: 0, mine: 0 };
           return (
-            <div key={r.id} className="rounded-xl bg-white/55 p-4 ring-1 ring-white/70">
-              <div className="flex items-center justify-between gap-2">
-                <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.15em] text-steel">
-                  {r.perspective} — claim
-                </span>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <span className="flex items-center gap-0.5">
-                    <button
-                      onClick={() => onVote?.(r.id, tally.mine === 1 ? 0 : 1)}
-                      aria-label="Support this rebuttal"
-                      className={`rounded-md p-1 transition-colors ${
-                        tally.mine === 1
-                          ? "text-verify"
-                          : "text-mist hover:bg-white/60 hover:text-ink"
-                      }`}
-                    >
-                      <ArrowUp className="size-3.5" />
-                    </button>
-                    <span className="min-w-4 text-center font-mono text-[10px] text-steel">
-                      {tally.up}
+            <article
+              key={rebuttal.id}
+              className="border-b border-rule bg-surface px-4 py-4 transition-colors hover:bg-surface-2/40 sm:px-5"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-[9px] text-mist">Perspective</span>
+                    <span className="font-display text-[12px] font-semibold text-ink">
+                      {rebuttal.perspective}
                     </span>
-                    <button
-                      onClick={() => onVote?.(r.id, tally.mine === -1 ? 0 : -1)}
-                      aria-label="Challenge this rebuttal"
-                      className={`rounded-md p-1 transition-colors ${
-                        tally.mine === -1
-                          ? "text-dispute"
-                          : "text-mist hover:bg-white/60 hover:text-ink"
-                      }`}
-                    >
-                      <ArrowDown className="size-3.5" />
-                    </button>
-                    <span className="min-w-4 text-center font-mono text-[10px] text-steel">
-                      {tally.down}
-                    </span>
-                  </span>
-                  <StatusBadge status={r.status} />
+                    <StatusBadge status={rebuttal.status} />
+                  </div>
                 </div>
-              </div>
-              <p className="mt-1.5 font-serif text-[14px] leading-snug text-ink">
-                {r.qualifier ? <em className="mr-1 text-mist">{r.qualifier}</em> : null}
-                {r.claim}
-              </p>
-
-              {(r.warrant || r.backing) && (
-                <div className="mt-2.5 space-y-1 rounded-lg bg-white/40 px-3 py-2.5 ring-1 ring-white/70">
-                  {r.warrant && (
-                    <div className="flex gap-2 text-[12px] leading-snug">
-                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-mist">
-                        Warrant
-                      </span>
-                      <span className="text-steel">{r.warrant}</span>
-                    </div>
-                  )}
-                  {r.backing && (
-                    <div className="flex gap-2 text-[12px] leading-snug">
-                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-mist">
-                        Backing
-                      </span>
-                      <span className="text-steel">{r.backing}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {r.counter && (
-                <div
-                  className={`mt-3 border-l-2 pl-3 ${
-                    r.counter.status === "verified"
-                      ? "border-verify/40"
-                      : r.counter.status === "disputed"
-                        ? "border-dispute/40"
-                        : "border-unv/40"
-                  }`}
-                >
-                  <div
-                    className={`font-mono text-[9px] uppercase tracking-[0.15em] ${
-                      r.counter.status === "verified"
-                        ? "text-verify"
-                        : r.counter.status === "disputed"
-                          ? "text-dispute"
-                          : "text-unv"
+                <div className="flex shrink-0 items-center border border-rule bg-surface-2 p-0.5">
+                  <button
+                    onClick={() => onVote?.(rebuttal.id, tally.mine === 1 ? 0 : 1)}
+                    aria-label="Concur with this rebuttal"
+                    aria-pressed={tally.mine === 1}
+                    className={`flex items-center gap-1 px-1.5 py-1 transition-colors ${
+                      tally.mine === 1
+                        ? "bg-verify/15 text-verify"
+                        : "text-mist hover:bg-highlight hover:text-ink"
                     }`}
                   >
-                    Counter — {r.counter.author}
+                    <ArrowUp className="size-3" />
+                    <span className="font-mono text-[10px] tabular-nums">{tally.up}</span>
+                  </button>
+                  <span aria-hidden className="h-3 w-px bg-rule" />
+                  <button
+                    onClick={() => onVote?.(rebuttal.id, tally.mine === -1 ? 0 : -1)}
+                    aria-label="Dissent from this rebuttal"
+                    aria-pressed={tally.mine === -1}
+                    className={`flex items-center gap-1 px-1.5 py-1 transition-colors ${
+                      tally.mine === -1
+                        ? "bg-dispute/15 text-dispute"
+                        : "text-mist hover:bg-highlight hover:text-ink"
+                    }`}
+                  >
+                    <ArrowDown className="size-3" />
+                    <span className="font-mono text-[10px] tabular-nums">{tally.down}</span>
+                  </button>
+                </div>
+              </div>
+
+              <p
+                dir="auto"
+                className={`mt-2 font-serif text-[15px] leading-[1.65] text-pretty text-ink ${
+                  containsArabic(rebuttal.claim) ? "font-arabic text-[18px] leading-[1.9]" : ""
+                }`}
+              >
+                {rebuttal.qualifier ? (
+                  <em className="mr-1 text-mist">{rebuttal.qualifier}</em>
+                ) : null}
+                {rebuttal.claim}
+              </p>
+
+              {(rebuttal.warrant || rebuttal.backing) && (
+                <dl className="mt-3 grid gap-2 border-t border-rule pt-2 sm:grid-cols-[4.5rem_1fr]">
+                  {rebuttal.warrant && (
+                    <>
+                      <dt className="font-mono text-[9px] text-mist">Ground</dt>
+                      <dd
+                        dir="auto"
+                        className={`text-[12px] leading-relaxed text-steel ${
+                          containsArabic(rebuttal.warrant)
+                            ? "font-arabic text-[15px] leading-[1.9]"
+                            : ""
+                        }`}
+                      >
+                        {rebuttal.warrant}
+                      </dd>
+                    </>
+                  )}
+                  {rebuttal.backing && (
+                    <>
+                      <dt className="font-mono text-[9px] text-mist">Source</dt>
+                      <dd
+                        dir="auto"
+                        className={`text-[12px] leading-relaxed text-steel ${
+                          containsArabic(rebuttal.backing)
+                            ? "font-arabic text-[15px] leading-[1.9]"
+                            : ""
+                        }`}
+                      >
+                        {rebuttal.backing}
+                      </dd>
+                    </>
+                  )}
+                </dl>
+              )}
+
+              {rebuttal.counter && (
+                <div className="mt-3 border-t border-rule pt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[9px] text-mist">
+                      Reply · {rebuttal.counter.author}
+                    </span>
+                    <StatusBadge status={rebuttal.counter.status} className="ml-auto" />
                   </div>
-                  <p className="mt-1 text-[12.5px] leading-snug text-steel">{r.counter.body}</p>
+                  <p
+                    dir="auto"
+                    className={`mt-1 text-[12.5px] leading-relaxed text-steel ${
+                      containsArabic(rebuttal.counter.body)
+                        ? "font-arabic text-[15px] leading-[1.9]"
+                        : ""
+                    }`}
+                  >
+                    {rebuttal.counter.body}
+                  </p>
                 </div>
               )}
 
-              <div className="mt-3 space-y-1.5 border-t border-white/70 pt-2.5">
-                {r.citations.map((c) => (
-                  <p key={c.id} className="font-mono text-[10px] leading-relaxed text-mist">
-                    {c.detail} <span className="text-steel">· {c.archive}</span>
-                  </p>
-                ))}
-              </div>
-            </div>
+              {rebuttal.citations.length > 0 && (
+                <div className="mt-3 border-t border-rule pt-2">
+                  <div className="font-mono text-[9px] text-mist">Citations</div>
+                  <div className="mt-1 space-y-1">
+                    {rebuttal.citations.map((citation) => (
+                      <div key={citation.id} className="flex items-start gap-2">
+                        <span className="mt-1">
+                          <StatusDot status={citation.status} />
+                        </span>
+                        <p className="min-w-0 font-mono text-[9.5px] leading-relaxed text-mist">
+                          <span className="text-steel">{citation.detail}</span>
+                          <span aria-hidden> · </span>
+                          {citation.archive}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </article>
           );
         })}
       </div>

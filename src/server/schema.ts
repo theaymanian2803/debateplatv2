@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS entries (
   reference     TEXT NOT NULL DEFAULT '',
   sections      TEXT NOT NULL DEFAULT '[]',
   map           TEXT NOT NULL DEFAULT '{}',
+  translations  TEXT NOT NULL DEFAULT '[]',
+  related       TEXT NOT NULL DEFAULT '[]',
+  scripture     TEXT NOT NULL DEFAULT '{}',
   sort_order    INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS commentaries (
@@ -95,6 +98,24 @@ CREATE TABLE IF NOT EXISTS paths (
   entry_ids  TEXT NOT NULL DEFAULT '[]',
   sort_order INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS waitlist (
+  id         TEXT PRIMARY KEY,
+  email      TEXT NOT NULL UNIQUE,
+  role       TEXT NOT NULL DEFAULT '',
+  note       TEXT NOT NULL DEFAULT '',
+  created_at INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS scripture_cache (
+  key        TEXT PRIMARY KEY,
+  payload    TEXT NOT NULL,
+  fetched_at INTEGER NOT NULL,
+  expires_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS rate_limits (
+  key          TEXT PRIMARY KEY,
+  window_start INTEGER NOT NULL,
+  count        INTEGER NOT NULL
+);
 `;
 
 type Executor = {
@@ -123,6 +144,7 @@ export async function migrate(db: Executor) {
   }
   await ensureColumn(db, "entries", "translations", "TEXT NOT NULL DEFAULT '[]'");
   await ensureColumn(db, "entries", "related", "TEXT NOT NULL DEFAULT '[]'");
+  await ensureColumn(db, "entries", "scripture", "TEXT NOT NULL DEFAULT '{}'");
   await ensureColumn(db, "rebuttals", "warrant", "TEXT NOT NULL DEFAULT ''");
   await ensureColumn(db, "rebuttals", "backing", "TEXT NOT NULL DEFAULT ''");
   await ensureColumn(db, "rebuttals", "qualifier", "TEXT NOT NULL DEFAULT ''");

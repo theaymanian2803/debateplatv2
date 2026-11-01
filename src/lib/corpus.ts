@@ -1,3 +1,5 @@
+import type { ScriptureMeta } from "@/lib/scripture";
+
 export type Verification = "verified" | "disputed" | "unverified";
 
 export type Citation = {
@@ -50,6 +52,7 @@ export type Entry = {
   map: { nodes: MapNode[]; edges: [string, string][] };
   translations: { label: string; text: string }[];
   related: string[];
+  scripture?: ScriptureMeta | undefined;
 };
 
 export const collections = [

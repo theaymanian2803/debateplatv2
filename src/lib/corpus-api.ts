@@ -198,3 +198,14 @@ export const getAuditLog = createServerFn({ method: "POST" })
 export const aiSuggestSource = createServerFn({ method: "POST" })
   .validator((detail: string) => detail)
   .handler(({ data }) => core.aiSuggestSource(data));
+
+export const joinWaitlist = createServerFn({ method: "POST" })
+  .validator((input: { email: string; role?: string; note?: string }) => input)
+  .handler(({ data }) => core.joinWaitlist(data));
+
+export const listWaitlist = createServerFn({ method: "POST" })
+  .validator((limit: number) => limit)
+  .handler(({ data }) => {
+    guard();
+    return core.listWaitlist(data);
+  });

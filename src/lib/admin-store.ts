@@ -7,6 +7,7 @@ import {
   type Rebuttal,
   type Verification,
 } from "@/lib/corpus";
+import type { ScriptureMeta } from "@/lib/scripture";
 
 export type AdminEntry = {
   id: string;
@@ -22,6 +23,7 @@ export type AdminEntry = {
   map: Entry["map"];
   translations: { label: string; text: string }[];
   related: string[];
+  scripture?: ScriptureMeta | undefined;
 };
 
 export type AdminCommentary = {
@@ -196,6 +198,7 @@ export function normalizeAdminData(data: AdminData): AdminData {
         : { nodes: [], edges: [] },
     translations: Array.isArray(e.translations) ? e.translations : [],
     related: Array.isArray(e.related) ? e.related : [],
+    scripture: e.scripture ?? undefined,
   }));
   const commentaries = data.commentaries.map((c) => ({
     ...c,

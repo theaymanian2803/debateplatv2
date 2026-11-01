@@ -9,10 +9,10 @@ import { Button, EmptyRow, Field, Input, Panel, Textarea } from "@/components/ad
 export const Route = createFileRoute("/admin/paths")({
   head: () => ({
     meta: [
-      { title: "Reading paths — Scholia Admin" },
+      { title: "Reading paths — Docket Editorial" },
       {
         name: "description",
-        content: "Curate ordered sequences through the corpus for guided reading.",
+        content: "Curate ordered reading paths through the corpus.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -112,10 +112,10 @@ function PathsPage() {
                     key={e.id}
                     type="button"
                     onClick={() => toggleEntry(e.id)}
-                    className={`rounded-full px-2.5 py-1 font-mono text-[10px] ring-1 transition ${
+                    className={`px-2.5 py-1 font-mono text-[10px] ring-1 transition ${
                       on
                         ? "bg-ink text-paper ring-ink/20"
-                        : "bg-white/60 text-steel ring-white/80 hover:bg-white/85"
+                        : "bg-surface text-steel ring-rule hover:bg-surface"
                     }`}
                   >
                     {e.title}
@@ -128,7 +128,7 @@ function PathsPage() {
                 {draft.entryIds.map((id, i) => (
                   <li
                     key={id}
-                    className="flex items-center gap-2 rounded-lg bg-white/45 px-3 py-2 ring-1 ring-white/70"
+                    className="flex items-center gap-2 bg-surface px-3 py-2 ring-1 ring-rule"
                   >
                     <span className="font-mono text-[10px] text-mist">{i + 1}</span>
                     <span className="min-w-0 flex-1 truncate text-[12.5px] text-ink">
@@ -138,7 +138,7 @@ function PathsPage() {
                       type="button"
                       onClick={() => move(i, -1)}
                       disabled={i === 0}
-                      className="rounded px-1.5 py-0.5 font-mono text-[11px] text-mist hover:bg-white/60 disabled:opacity-30"
+                      className="rounded px-1.5 py-0.5 font-mono text-[11px] text-mist hover:bg-surface disabled:opacity-30"
                     >
                       ↑
                     </button>
@@ -146,7 +146,7 @@ function PathsPage() {
                       type="button"
                       onClick={() => move(i, 1)}
                       disabled={i === draft.entryIds.length - 1}
-                      className="rounded px-1.5 py-0.5 font-mono text-[11px] text-mist hover:bg-white/60 disabled:opacity-30"
+                      className="rounded px-1.5 py-0.5 font-mono text-[11px] text-mist hover:bg-surface disabled:opacity-30"
                     >
                       ↓
                     </button>
@@ -161,11 +161,11 @@ function PathsPage() {
 
       <Panel title="Reading paths" subtitle={`${paths.length} on file`}>
         {paths.length === 0 ? (
-          <EmptyRow>No reading paths yet.</EmptyRow>
+          <EmptyRow>No Reading paths yet.</EmptyRow>
         ) : (
           <ul className="space-y-2">
             {paths.map((p) => (
-              <li key={p.id} className="rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75">
+              <li key={p.id} className="bg-surface px-3.5 py-3 ring-1 ring-rule">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="truncate font-serif text-[14px] text-ink">{p.title}</div>
@@ -174,7 +174,7 @@ function PathsPage() {
                         {p.description}
                       </p>
                     )}
-                    <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
+                    <div className="mt-1 font-mono text-[10px] text-mist">
                       {p.entryIds.length} entries
                     </div>
                   </div>
@@ -198,7 +198,7 @@ function PathsPage() {
                     {p.entryIds.map((id, i) => (
                       <span
                         key={id}
-                        className="rounded-full bg-white/70 px-2 py-0.5 font-mono text-[10px] text-steel ring-1 ring-white/80"
+                        className="border border-rule bg-surface-2 px-2 py-0.5 font-mono text-[9.5px] text-steel"
                       >
                         {i + 1}. {byId.get(id) ?? id}
                       </span>

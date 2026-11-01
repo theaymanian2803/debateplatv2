@@ -11,15 +11,23 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CasesRouteImport } from './routes/cases'
+import { Route as QuranRouteImport } from './routes/quran'
+import { Route as ReadRouteImport } from './routes/read'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminCommentariesRouteImport } from './routes/admin.commentaries'
+import { Route as AdminDatabaseRouteImport } from './routes/admin.database'
 import { Route as AdminEntriesRouteImport } from './routes/admin.entries'
 import { Route as AdminPathsRouteImport } from './routes/admin.paths'
 import { Route as AdminRebuttalsRouteImport } from './routes/admin.rebuttals'
 import { Route as AdminRequestsRouteImport } from './routes/admin.requests'
 import { Route as AdminSourcesRouteImport } from './routes/admin.sources'
 import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
+import { Route as AdminWaitlistRouteImport } from './routes/admin.waitlist'
+import { Route as ApiHealthRouteImport } from './routes/api.health'
+import { Route as CaseIdRouteImport } from './routes/case.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +37,26 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasesRoute = CasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuranRoute = QuranRouteImport.update({
+  id: '/quran',
+  path: '/quran',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadRoute = ReadRouteImport.update({
+  id: '/read',
+  path: '/read',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -44,6 +72,11 @@ const AdminActivityRoute = AdminActivityRouteImport.update({
 const AdminCommentariesRoute = AdminCommentariesRouteImport.update({
   id: '/commentaries',
   path: '/commentaries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDatabaseRoute = AdminDatabaseRouteImport.update({
+  id: '/database',
+  path: '/database',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEntriesRoute = AdminEntriesRouteImport.update({
@@ -76,44 +109,83 @@ const AdminTaxonomyRoute = AdminTaxonomyRouteImport.update({
   path: '/taxonomy',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminWaitlistRoute = AdminWaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CaseIdRoute = CaseIdRouteImport.update({
+  id: '/case/$id',
+  path: '/case/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/cases': typeof CasesRoute
+  '/quran': typeof QuranRoute
+  '/read': typeof ReadRoute
+  '/welcome': typeof WelcomeRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/commentaries': typeof AdminCommentariesRoute
+  '/admin/database': typeof AdminDatabaseRoute
   '/admin/entries': typeof AdminEntriesRoute
   '/admin/paths': typeof AdminPathsRoute
   '/admin/rebuttals': typeof AdminRebuttalsRoute
   '/admin/requests': typeof AdminRequestsRoute
   '/admin/sources': typeof AdminSourcesRoute
   '/admin/taxonomy': typeof AdminTaxonomyRoute
+  '/admin/waitlist': typeof AdminWaitlistRoute
+  '/api/health': typeof ApiHealthRoute
+  '/case/$id': typeof CaseIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cases': typeof CasesRoute
+  '/quran': typeof QuranRoute
+  '/read': typeof ReadRoute
+  '/welcome': typeof WelcomeRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/commentaries': typeof AdminCommentariesRoute
+  '/admin/database': typeof AdminDatabaseRoute
   '/admin/entries': typeof AdminEntriesRoute
   '/admin/paths': typeof AdminPathsRoute
   '/admin/rebuttals': typeof AdminRebuttalsRoute
   '/admin/requests': typeof AdminRequestsRoute
   '/admin/sources': typeof AdminSourcesRoute
   '/admin/taxonomy': typeof AdminTaxonomyRoute
+  '/admin/waitlist': typeof AdminWaitlistRoute
+  '/api/health': typeof ApiHealthRoute
+  '/case/$id': typeof CaseIdRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/cases': typeof CasesRoute
+  '/quran': typeof QuranRoute
+  '/read': typeof ReadRoute
+  '/welcome': typeof WelcomeRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/commentaries': typeof AdminCommentariesRoute
+  '/admin/database': typeof AdminDatabaseRoute
   '/admin/entries': typeof AdminEntriesRoute
   '/admin/paths': typeof AdminPathsRoute
   '/admin/rebuttals': typeof AdminRebuttalsRoute
   '/admin/requests': typeof AdminRequestsRoute
   '/admin/sources': typeof AdminSourcesRoute
   '/admin/taxonomy': typeof AdminTaxonomyRoute
+  '/admin/waitlist': typeof AdminWaitlistRoute
+  '/api/health': typeof ApiHealthRoute
+  '/case/$id': typeof CaseIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -121,45 +193,75 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/cases'
+    | '/quran'
+    | '/read'
+    | '/welcome'
     | '/admin/activity'
     | '/admin/commentaries'
+    | '/admin/database'
     | '/admin/entries'
     | '/admin/paths'
     | '/admin/rebuttals'
     | '/admin/requests'
     | '/admin/sources'
     | '/admin/taxonomy'
+    | '/admin/waitlist'
+    | '/api/health'
+    | '/case/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cases'
+    | '/quran'
+    | '/read'
+    | '/welcome'
     | '/admin/activity'
     | '/admin/commentaries'
+    | '/admin/database'
     | '/admin/entries'
     | '/admin/paths'
     | '/admin/rebuttals'
     | '/admin/requests'
     | '/admin/sources'
     | '/admin/taxonomy'
+    | '/admin/waitlist'
+    | '/api/health'
+    | '/case/$id'
     | '/admin'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/cases'
+    | '/quran'
+    | '/read'
+    | '/welcome'
     | '/admin/activity'
     | '/admin/commentaries'
+    | '/admin/database'
     | '/admin/entries'
     | '/admin/paths'
     | '/admin/rebuttals'
     | '/admin/requests'
     | '/admin/sources'
     | '/admin/taxonomy'
+    | '/admin/waitlist'
+    | '/api/health'
+    | '/case/$id'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CasesRoute: typeof CasesRoute
+  QuranRoute: typeof QuranRoute
+  ReadRoute: typeof ReadRoute
+  WelcomeRoute: typeof WelcomeRoute
+  ApiHealthRoute: typeof ApiHealthRoute
+  CaseIdRoute: typeof CaseIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -176,6 +278,34 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cases': {
+      id: '/cases'
+      path: '/cases'
+      fullPath: '/cases'
+      preLoaderRoute: typeof CasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quran': {
+      id: '/quran'
+      path: '/quran'
+      fullPath: '/quran'
+      preLoaderRoute: typeof QuranRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/read': {
+      id: '/read'
+      path: '/read'
+      fullPath: '/read'
+      preLoaderRoute: typeof ReadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -197,6 +327,13 @@ declare module '@tanstack/react-router' {
       path: '/commentaries'
       fullPath: '/admin/commentaries'
       preLoaderRoute: typeof AdminCommentariesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/database': {
+      id: '/admin/database'
+      path: '/database'
+      fullPath: '/admin/database'
+      preLoaderRoute: typeof AdminDatabaseRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/entries': {
@@ -241,30 +378,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTaxonomyRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/waitlist': {
+      id: '/admin/waitlist'
+      path: '/waitlist'
+      fullPath: '/admin/waitlist'
+      preLoaderRoute: typeof AdminWaitlistRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/case/$id': {
+      id: '/case/$id'
+      path: '/case/$id'
+      fullPath: '/case/$id'
+      preLoaderRoute: typeof CaseIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminCommentariesRoute: typeof AdminCommentariesRoute
+  AdminDatabaseRoute: typeof AdminDatabaseRoute
   AdminEntriesRoute: typeof AdminEntriesRoute
   AdminPathsRoute: typeof AdminPathsRoute
   AdminRebuttalsRoute: typeof AdminRebuttalsRoute
   AdminRequestsRoute: typeof AdminRequestsRoute
   AdminSourcesRoute: typeof AdminSourcesRoute
   AdminTaxonomyRoute: typeof AdminTaxonomyRoute
+  AdminWaitlistRoute: typeof AdminWaitlistRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
   AdminCommentariesRoute: AdminCommentariesRoute,
+  AdminDatabaseRoute: AdminDatabaseRoute,
   AdminEntriesRoute: AdminEntriesRoute,
   AdminPathsRoute: AdminPathsRoute,
   AdminRebuttalsRoute: AdminRebuttalsRoute,
   AdminRequestsRoute: AdminRequestsRoute,
   AdminSourcesRoute: AdminSourcesRoute,
   AdminTaxonomyRoute: AdminTaxonomyRoute,
+  AdminWaitlistRoute: AdminWaitlistRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -273,6 +435,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  CasesRoute: CasesRoute,
+  QuranRoute: QuranRoute,
+  ReadRoute: ReadRoute,
+  WelcomeRoute: WelcomeRoute,
+  ApiHealthRoute: ApiHealthRoute,
+  CaseIdRoute: CaseIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

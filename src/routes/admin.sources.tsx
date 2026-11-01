@@ -7,14 +7,14 @@ import { Button, EmptyRow, Field, Input, Panel, Select } from "@/components/admi
 export const Route = createFileRoute("/admin/sources")({
   head: () => ({
     meta: [
-      { title: "Source registry — Scholia Admin" },
+      { title: "Source registry — Docket Editorial" },
       {
         name: "description",
         content:
-          "Register and verify the books, articles, manuscripts, and scholars cited across the corpus.",
+          "Register and verify the books, articles, manuscripts, and scholars cited across the record.",
       },
-      { property: "og:title", content: "Source registry — Scholia Admin" },
-      { property: "og:description", content: "Verify and manage cited sources in the corpus." },
+      { property: "og:title", content: "Source registry — Docket Editorial" },
+      { property: "og:description", content: "Verify and manage sources in the record." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -37,7 +37,7 @@ const kindLabel: Record<AdminSource["kind"], string> = {
 const statusStyle: Record<SourceStatus, string> = {
   verified: "bg-verify/10 text-verify ring-verify/25",
   pending: "bg-dispute/10 text-dispute ring-dispute/25",
-  unverified: "bg-white/55 text-unv ring-unv/25",
+  unverified: "bg-surface text-unv ring-unv/25",
 };
 
 const statusDot: Record<SourceStatus, string> = {
@@ -144,10 +144,7 @@ function SourcesPage() {
         </div>
       </Panel>
 
-      <Panel
-        title="Source & citation registry"
-        subtitle={`${visible.length} shown of ${data.sources.length}`}
-      >
+      <Panel title="Source registry" subtitle={`${visible.length} shown of ${data.sources.length}`}>
         <div className="mb-4 grid gap-3 sm:grid-cols-2">
           <Select
             value={filter}
@@ -178,11 +175,11 @@ function SourcesPage() {
             {visible.map((s) => (
               <li
                 key={s.id}
-                className="flex items-start justify-between gap-3 rounded-xl bg-white/55 px-3.5 py-3 ring-1 ring-white/75"
+                className="flex items-start justify-between gap-3 bg-surface px-3.5 py-3 ring-1 ring-rule"
               >
                 <div className="min-w-0">
                   <div className="truncate font-serif text-[14px]">{s.label}</div>
-                  <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-mist">
+                  <div className="mt-0.5 font-mono text-[10px] text-mist">
                     {kindLabel[s.kind]}
                     {s.archive ? ` · ${s.archive}` : ""}
                   </div>
@@ -193,7 +190,7 @@ function SourcesPage() {
                     type="button"
                     onClick={() => toggle(s.id)}
                     title="Click to cycle verification status"
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] ring-1 transition hover:opacity-80 ${statusStyle[s.status]}`}
+                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[10px] ring-1 transition hover:opacity-80 ${statusStyle[s.status]}`}
                   >
                     <span className={`size-1.5 shrink-0 rounded-full ${statusDot[s.status]}`} />
                     {s.status}
