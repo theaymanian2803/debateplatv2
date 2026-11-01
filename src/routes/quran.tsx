@@ -47,7 +47,7 @@ import {
 } from "@/lib/quran-storage";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 
-const title = "Quran library � Docket";
+const title = "Quran library — Libyano School";
 const description =
   "Read the Quran page by page in the Madani mushaf order, with Uthmani Arabic, English translations, and tafsir.";
 

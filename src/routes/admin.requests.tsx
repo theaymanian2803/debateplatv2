@@ -8,7 +8,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 export const Route = createFileRoute("/admin/requests")({
   head: () => ({
     meta: [
-      { title: "Source requests — Docket Editorial" },
+      { title: "Source requests — Libyano School Editorial" },
       {
         name: "description",
         content: "Review reader-submitted citations and promote them to the record.",

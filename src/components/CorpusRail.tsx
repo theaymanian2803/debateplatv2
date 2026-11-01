@@ -292,12 +292,12 @@ export function DocketRail({
   return (
     <aside
       className={`flex h-full w-full flex-col border-r border-rule bg-surface ${className}`}
-      aria-label="Docket filters"
+      aria-label="Case docket filters"
     >
       <div className="flex items-center gap-2 border-b border-rule px-4 py-3">
         <ListFilter className="size-3.5 text-mist" />
         <span className="font-sidebar text-[14px] font-bold tracking-[-0.02em] text-ink">
-          Docket
+          Case docket
         </span>
         <span className="border border-rule bg-surface-2 px-1.5 py-0.5 font-mono text-[9.5px] tabular-nums text-steel">
           {results.length}/{entries.length}

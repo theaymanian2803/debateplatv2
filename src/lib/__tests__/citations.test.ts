@@ -23,6 +23,7 @@ describe("case citations", () => {
   it("escapes the BibTeX title and uses a stable key", () => {
     const bibtex = caseCitation(entry, "bibtex", url, accessed);
     expect(bibtex).toContain(`@misc{docket-${entry.id}`);
+    expect(bibtex).toContain("author = {{Libyano School}}");
     expect(bibtex).toContain("title = {");
     expect(bibtex).toContain("url = {");
   });

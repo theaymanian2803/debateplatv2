@@ -9,13 +9,13 @@ import { Button, EmptyRow, Field, Input, Panel, Select, Textarea } from "@/compo
 export const Route = createFileRoute("/admin/commentaries")({
   head: () => ({
     meta: [
-      { title: "Commentary & references — Docket Editorial" },
+      { title: "Commentary & references — Libyano School Editorial" },
       {
         name: "description",
         content:
           "Attach scholarly commentary to a case with author, book, volume and page, and publication reference.",
       },
-      { property: "og:title", content: "Commentary & references — Docket Editorial" },
+      { property: "og:title", content: "Commentary & references — Libyano School Editorial" },
       {
         property: "og:description",
         content: "Attach scholarly commentary and references to cases.",

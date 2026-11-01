@@ -6,7 +6,7 @@ import { clearDbConfig, getDbConfigStatus, saveDbConfig } from "@/lib/db-config-
 import { clearSessionCache } from "@/lib/session-reset";
 import { Button, Field, Input, PageHeader, Panel } from "@/components/admin/ui";
 
-const title = "Database — Docket Editorial";
+const title = "Database — Libyano School Editorial";
 const description =
   "Configure the Turso database used by this Editorial desk. Credentials are encrypted server-side.";
 

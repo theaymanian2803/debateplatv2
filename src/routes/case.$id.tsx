@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CaseWorkspace } from "@/components/CaseWorkspace";
 
-const title = "Docket — Case";
+const title = "Case — Libyano School";
 const description =
   "A case file for contested claims: the source, commentary, rebuttals, citations, and status on the record.";
 
@@ -14,9 +14,9 @@ export const Route = createFileRoute("/case/$id")({
       { property: "og:description", content: description },
       { property: "og:type", content: "article" },
       { property: "og:url", content: `/case/${params.id}` },
-      { property: "og:image", content: "/og-docket.png" },
+      { property: "og:image", content: "/og-libyano.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "/og-docket.png" },
+      { name: "twitter:image", content: "/og-libyano.png" },
     ],
     links: [{ rel: "canonical", href: `/case/${params.id}` }],
   }),

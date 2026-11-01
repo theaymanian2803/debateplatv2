@@ -9,16 +9,16 @@ import { Button, EmptyRow, Field, Input, Panel, Select, Textarea } from "@/compo
 export const Route = createFileRoute("/admin/rebuttals")({
   head: () => ({
     meta: [
-      { title: "Rebuttals — Docket Editorial" },
+      { title: "Rebuttals — Libyano School Editorial" },
       {
         name: "description",
         content:
           "Record rebuttals and replies against cases with a side-by-side preview of the claim.",
       },
-      { property: "og:title", content: "Rebuttals — Docket Editorial" },
+      { property: "og:title", content: "Rebuttals — Libyano School Editorial" },
       {
         property: "og:description",
-        content: "Record and review rebuttals in the Docket record.",
+        content: "Record and review rebuttals in the Libyano School record.",
       },
       { name: "robots", content: "noindex" },
     ],

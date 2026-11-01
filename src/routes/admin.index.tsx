@@ -5,15 +5,16 @@ import { Panel, Stat } from "@/components/admin/ui";
 export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [
-      { title: "Editorial overview — Docket Editorial" },
+      { title: "Editorial overview — Libyano School Editorial" },
       {
         name: "description",
-        content: "Case totals, recent editorial activity, and quick actions for the Docket record.",
+        content:
+          "Case totals, recent editorial activity, and quick actions for the Libyano School record.",
       },
-      { property: "og:title", content: "Editorial overview — Docket Editorial" },
+      { property: "og:title", content: "Editorial overview — Libyano School Editorial" },
       {
         property: "og:description",
-        content: "Case totals and quick actions for the Docket record.",
+        content: "Case totals and quick actions for the Libyano School record.",
       },
       { name: "robots", content: "noindex" },
     ],

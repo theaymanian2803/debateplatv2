@@ -8,13 +8,13 @@ import { EmptyRow, Panel, Stat } from "@/components/admin/ui";
 export const Route = createFileRoute("/admin/waitlist")({
   head: () => ({
     meta: [
-      { title: "Access requests — Docket Editorial" },
+      { title: "Access requests — Libyano School Editorial" },
       {
         name: "description",
-        content: "Early-access requests for Docket researcher and institution plans.",
+        content: "Early-access requests for Libyano School researcher and institution plans.",
       },
-      { property: "og:title", content: "Access requests — Docket Editorial" },
-      { property: "og:description", content: "Early-access requests for Docket." },
+      { property: "og:title", content: "Access requests — Libyano School Editorial" },
+      { property: "og:description", content: "Early-access requests for Libyano School." },
       { name: "robots", content: "noindex" },
     ],
   }),

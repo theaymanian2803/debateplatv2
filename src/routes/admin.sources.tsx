@@ -7,13 +7,13 @@ import { Button, EmptyRow, Field, Input, Panel, Select } from "@/components/admi
 export const Route = createFileRoute("/admin/sources")({
   head: () => ({
     meta: [
-      { title: "Source registry — Docket Editorial" },
+      { title: "Source registry — Libyano School Editorial" },
       {
         name: "description",
         content:
           "Register and verify the books, articles, manuscripts, and scholars cited across the record.",
       },
-      { property: "og:title", content: "Source registry — Docket Editorial" },
+      { property: "og:title", content: "Source registry — Libyano School Editorial" },
       { property: "og:description", content: "Verify and manage sources in the record." },
       { name: "robots", content: "noindex" },
     ],

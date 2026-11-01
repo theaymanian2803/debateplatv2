@@ -29,7 +29,7 @@ export function CasePrintView({ entry, url }: { entry: Entry; url: string }) {
     <article className="print-case mx-auto max-w-[70ch] px-8 py-10 text-black">
       <header className="border-b-2 border-black pb-4">
         <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[9px] uppercase tracking-[0.12em]">
-          <span>Docket · Case file</span>
+          <span>Libyano School · Case file</span>
           <span>{docketNo(entry.id)}</span>
         </div>
         <h1 className="mt-4 font-display text-[28px] leading-tight font-bold tracking-[-0.03em]">
@@ -171,7 +171,7 @@ export function CasePrintView({ entry, url }: { entry: Entry; url: string }) {
       </section>
 
       <footer className="mt-8 border-t border-black pt-3 font-mono text-[8.5px] leading-relaxed">
-        <p>Docket · {url}</p>
+        <p>Libyano School · {url}</p>
         <p className="mt-1">
           Generated {new Date().toLocaleString()} · Source texts retain their own licences.
         </p>

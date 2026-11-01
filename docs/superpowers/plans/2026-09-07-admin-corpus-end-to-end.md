@@ -24,6 +24,7 @@
 ### Task 1: Extend the admin data model for faithful round-trip
 
 **Files:**
+
 - Modify: `src/lib/admin-store.ts` (types + `seedData`)
 - Modify: `src/routes/admin.entries.tsx` (`blank()`)
 - Modify: `src/routes/admin.rebuttals.tsx` (`blank()`)
@@ -32,6 +33,7 @@
 - Create: `vitest.config.ts`
 
 **Interfaces:**
+
 - Consumes: `CommentarySection`, `Citation`, `Entry`, `Rebuttal`, `Verification` from `@/lib/corpus`; `corpusEntries` already imported in `admin-store.ts`.
 - Produces: `AdminEntry` gains `sections: CommentarySection[]` and `map: Entry["map"]`; `AdminRebuttal` gains `counter?: Rebuttal["counter"]` and `citations: Citation[]`. `seedData()` populates them. Later tasks rely on these fields.
 
@@ -42,11 +44,13 @@ npm install -D vitest
 ```
 
 Add to `package.json` `scripts`:
+
 ```json
 "test": "vitest run"
 ```
 
-Create `vitest.config.ts` (separate from `vite.config.ts` so the Lovable wrapper config is untouched):
+Create `vitest.config.ts` (separate from `vite.config.ts` so the Vite wrapper config is untouched):
+
 ```ts
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
@@ -65,6 +69,7 @@ export default defineConfig({
 - [ ] **Step 2: Write the failing seedData round-trip test**
 
 Create `src/lib/__tests__/admin-store.test.ts`:
+
 ```ts
 import { describe, expect, it } from "vitest";
 import { seedData } from "@/lib/admin-store";
@@ -97,6 +102,7 @@ Expected: FAIL — `seedData` produces entries/rebuttals without `sections`/`map
 - [ ] **Step 4: Implement the model changes**
 
 In `src/lib/admin-store.ts`, update the import to add the corpus types:
+
 ```ts
 import {
   entries as corpusEntries,
@@ -109,6 +115,7 @@ import {
 ```
 
 Extend `AdminEntry`:
+
 ```ts
 export type AdminEntry = {
   id: string;
@@ -126,6 +133,7 @@ export type AdminEntry = {
 ```
 
 Extend `AdminRebuttal`:
+
 ```ts
 export type AdminRebuttal = {
   id: string;
@@ -141,40 +149,43 @@ export type AdminRebuttal = {
 ```
 
 In `seedData()`, the entries map gains the two fields:
+
 ```ts
-    return {
-      id: e.id,
-      kind: e.kind,
-      title: e.title,
-      originalText: e.primary,
-      translation: e.secondary,
-      category: categoryLabel[e.collection] ?? e.collection,
-      subCategory: parts[parts.length - 1] ?? "",
-      reference: e.subtitle,
-      tags: e.map.nodes.slice(0, 3).map((n) => n.label),
-      sections: e.sections,
-      map: e.map,
-    };
+return {
+  id: e.id,
+  kind: e.kind,
+  title: e.title,
+  originalText: e.primary,
+  translation: e.secondary,
+  category: categoryLabel[e.collection] ?? e.collection,
+  subCategory: parts[parts.length - 1] ?? "",
+  reference: e.subtitle,
+  tags: e.map.nodes.slice(0, 3).map((n) => n.label),
+  sections: e.sections,
+  map: e.map,
+};
 ```
 
 The rebuttals map gains counter and citations (conditional spread for `counter` due to `exactOptionalPropertyTypes`):
+
 ```ts
-  const rebuttals: AdminRebuttal[] = corpusEntries.flatMap((e) =>
-    e.rebuttals.map((r) => ({
-      id: uid("reb"),
-      entryId: e.id,
-      opponent: r.counter?.author ?? r.perspective,
-      stance: r.perspective,
-      text: r.counter?.body ?? r.claim,
-      counterRefs: r.citations.map((c) => c.label).join("; "),
-      status: r.status,
-      ...(r.counter ? { counter: r.counter } : {}),
-      citations: r.citations,
-    })),
-  );
+const rebuttals: AdminRebuttal[] = corpusEntries.flatMap((e) =>
+  e.rebuttals.map((r) => ({
+    id: uid("reb"),
+    entryId: e.id,
+    opponent: r.counter?.author ?? r.perspective,
+    stance: r.perspective,
+    text: r.counter?.body ?? r.claim,
+    counterRefs: r.citations.map((c) => c.label).join("; "),
+    status: r.status,
+    ...(r.counter ? { counter: r.counter } : {}),
+    citations: r.citations,
+  })),
+);
 ```
 
 In `src/routes/admin.entries.tsx`, update `blank()`:
+
 ```ts
 const blank = (): AdminEntry => ({
   id: uid("entry"),
@@ -192,17 +203,18 @@ const blank = (): AdminEntry => ({
 ```
 
 In `src/routes/admin.rebuttals.tsx`, update `blank()` (omit `counter` — do not assign `undefined`):
+
 ```ts
-  const blank = (): AdminRebuttal => ({
-    id: uid("reb"),
-    entryId,
-    opponent: "",
-    stance: "",
-    text: "",
-    counterRefs: "",
-    status: "unverified",
-    citations: [],
-  });
+const blank = (): AdminRebuttal => ({
+  id: uid("reb"),
+  entryId,
+  opponent: "",
+  stance: "",
+  text: "",
+  counterRefs: "",
+  status: "unverified",
+  citations: [],
+});
 ```
 
 - [ ] **Step 5: Run tests to verify they pass**
@@ -222,6 +234,7 @@ Expected: no errors.
 git add src/lib/admin-store.ts src/routes/admin.entries.tsx src/routes/admin.rebuttals.tsx vitest.config.ts package.json src/lib/__tests__/admin-store.test.ts
 git commit -m "feat(admin): round-trip sections, map, counter, citations in admin store"
 ```
+
 (Skip commit if the user has not requested commits.)
 
 ---
@@ -229,10 +242,12 @@ git commit -m "feat(admin): round-trip sections, map, counter, citations in admi
 ### Task 2: Build the corpus adapter
 
 **Files:**
+
 - Create: `src/lib/corpus-adapter.ts`
 - Create: `src/lib/__tests__/corpus-adapter.test.ts`
 
 **Interfaces:**
+
 - Consumes: `AdminData` from `@/lib/admin-store`; `Entry`, `CommentarySection`, `Citation`, `Verification` from `@/lib/corpus`.
 - Produces:
   - `collectionIdFor(label: string): string`
@@ -244,6 +259,7 @@ git commit -m "feat(admin): round-trip sections, map, counter, citations in admi
 - [ ] **Step 1: Write the failing adapter tests**
 
 Create `src/lib/__tests__/corpus-adapter.test.ts`:
+
 ```ts
 import { describe, expect, it } from "vitest";
 import { seedData } from "@/lib/admin-store";
@@ -343,11 +359,11 @@ const collectionLabel: Record<string, string> = {
 
 export function collectionIdFor(label: string): string {
   return (
-    labelToCollectionId[label] ??
-    label
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "") ||
+    (labelToCollectionId[label] ??
+      label
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")) ||
     "custom"
   );
 }
@@ -359,11 +375,9 @@ export function collectionLabelFor(id: string): string {
 export function adminToEntries(admin: AdminData): Entry[] {
   return admin.entries.map((e) => {
     const collection = collectionIdFor(e.category);
-    const breadcrumb = [
-      "Sources",
-      collectionLabelFor(collection),
-      e.subCategory || e.title,
-    ].join(" / ");
+    const breadcrumb = ["Sources", collectionLabelFor(collection), e.subCategory || e.title].join(
+      " / ",
+    );
 
     const editorial = admin.commentaries
       .filter((c) => c.entryId === e.id)
@@ -433,6 +447,7 @@ Expected: no errors.
 git add src/lib/corpus-adapter.ts src/lib/__tests__/corpus-adapter.test.ts
 git commit -m "feat(corpus): add admin-to-entry adapter with tests"
 ```
+
 (Skip commit if the user has not requested commits.)
 
 ---
@@ -440,11 +455,13 @@ git commit -m "feat(corpus): add admin-to-entry adapter with tests"
 ### Task 3: Wire the public reading room to the shared store
 
 **Files:**
+
 - Create: `src/lib/use-corpus.ts`
 - Modify: `src/routes/index.tsx`
 - Modify: `src/components/CorpusSidebar.tsx`
 
 **Interfaces:**
+
 - Consumes: `adminToEntries`, `collectionsFor` from `@/lib/corpus-adapter`; `seedData`, `STORAGE_KEY`, `AdminData` from `@/lib/admin-store`; `Entry` type from `@/lib/corpus`.
 - Produces: `useCorpus(): { entries: Entry[]; collections: { id: string; label: string }[] }` — consumed by `index.tsx` and passed into `CorpusSidebar`.
 
@@ -489,6 +506,7 @@ export function useCorpus(): {
 - [ ] **Step 2: Update `src/routes/index.tsx`**
 
 Replace the static import with the hook:
+
 ```ts
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -502,6 +520,7 @@ import { CitationLedger } from "@/components/CitationLedger";
 ```
 
 In `ReadingRoom`, replace `const entry = entries.find(...)` with hook-based data and an empty-state guard:
+
 ```ts
 function ReadingRoom() {
   const { entries, collections } = useCorpus();
@@ -541,6 +560,7 @@ function ReadingRoom() {
 ```
 
 Pass the new props to the sidebar:
+
 ```tsx
 <CorpusSidebar
   entries={entries}
@@ -559,6 +579,7 @@ Keep the rest of the component (header, `PrimaryPane`, `RebuttalPane`, `Argument
 - [ ] **Step 3: Update `src/components/CorpusSidebar.tsx`**
 
 Change the signature to accept props and remove the static imports:
+
 ```tsx
 import type { Entry } from "@/lib/corpus";
 
@@ -600,6 +621,7 @@ Run: `npx prettier --write src/lib/use-corpus.ts src/routes/index.tsx src/compon
 git add src/lib/use-corpus.ts src/routes/index.tsx src/components/CorpusSidebar.tsx
 git commit -m "feat(reading-room): render corpus from the shared admin store"
 ```
+
 (Skip commit if the user has not requested commits.)
 
 ---
@@ -607,9 +629,11 @@ git commit -m "feat(reading-room): render corpus from the shared admin store"
 ### Task 4: Verify end to end
 
 **Files:**
+
 - None (verification only).
 
 **Interfaces:**
+
 - Consumes: everything from Tasks 1–3.
 
 - [ ] **Step 1: Run the unit tests**
@@ -630,6 +654,7 @@ Expected: `✓ built` for client, ssr, and nitro stages, no errors.
 - [ ] **Step 4: Dev-server smoke test**
 
 Run: `npm run dev`, then manually verify:
+
 - `/` loads with the seeded corpus (unaffected when no admin edits exist).
 - Edit an entry's title in `/admin/entries` → the new title appears on `/` (pane + sidebar).
 - Add a new entry in admin → it appears in the public sidebar and renders (with no sections/map — verify no crash).

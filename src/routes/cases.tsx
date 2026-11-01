@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CaseWorkspace } from "@/components/CaseWorkspace";
 
-const title = "Docket — Cases";
+const title = "Cases — Libyano School";
 const description =
   "A case file for contested claims: primary texts, exhibits, briefs, authorities, and the ruling on the record.";
 

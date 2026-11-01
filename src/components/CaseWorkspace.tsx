@@ -215,7 +215,7 @@ export function CaseWorkspace({
     if (!entry || typeof document === "undefined") return;
     const url = caseShareUrl(entry, window.location.origin);
     const description = entry.subtitle || entry.primary.slice(0, 160);
-    document.title = `${entry.title} — Docket`;
+    document.title = `${entry.title} — Libyano School`;
 
     const setMeta = (key: "name" | "property", name: string, content: string) => {
       let element = document.head.querySelector<HTMLMetaElement>(`meta[${key}="${name}"]`);
@@ -228,14 +228,14 @@ export function CaseWorkspace({
     };
 
     setMeta("name", "description", description);
-    setMeta("property", "og:title", `${entry.title} — Docket`);
+    setMeta("property", "og:title", `${entry.title} — Libyano School`);
     setMeta("property", "og:description", description);
     setMeta("property", "og:url", url);
-    setMeta("property", "og:image", `${window.location.origin}/og-docket.png`);
+    setMeta("property", "og:image", `${window.location.origin}/og-libyano.png`);
     setMeta("name", "twitter:card", "summary_large_image");
-    setMeta("name", "twitter:title", `${entry.title} — Docket`);
+    setMeta("name", "twitter:title", `${entry.title} — Libyano School`);
     setMeta("name", "twitter:description", description);
-    setMeta("name", "twitter:image", `${window.location.origin}/og-docket.png`);
+    setMeta("name", "twitter:image", `${window.location.origin}/og-libyano.png`);
   }, [entry]);
 
   useEffect(() => {

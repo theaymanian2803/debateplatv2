@@ -19,16 +19,16 @@ import {
 export const Route = createFileRoute("/admin/entries")({
   head: () => ({
     meta: [
-      { title: "Cases — Docket Editorial" },
+      { title: "Cases — Libyano School Editorial" },
       {
         name: "description",
         content:
           "Add and edit texts and claims with original text, translation, category, and cross-reference tags.",
       },
-      { property: "og:title", content: "Cases — Docket Editorial" },
+      { property: "og:title", content: "Cases — Libyano School Editorial" },
       {
         property: "og:description",
-        content: "Add and edit texts and claims in the Docket record.",
+        content: "Add and edit texts and claims in the Libyano School record.",
       },
       { name: "robots", content: "noindex" },
     ],

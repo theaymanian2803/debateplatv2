@@ -10,9 +10,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const title = "Welcome - Docket";
+const title = "Welcome - Libyano School";
 const description =
-  "A short guide to Docket: reading a case, using the Quran library, the Editorial desk, and connecting your own Turso database.";
+  "A short guide to Libyano School: reading a case, using the Quran library, the Editorial desk, and connecting your own Turso database.";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({
@@ -129,9 +129,9 @@ function WelcomePage() {
             A case file for contested claims.
           </h1>
           <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-steel">
-            Docket keeps the source, the commentary, the rebuttals, and the citations in one record,
-            so you can see what a claim actually rests on. This guide covers the public docket, the
-            Quran library, the Editorial desk, and how to connect your own database.
+            Libyano School keeps the source, the commentary, the rebuttals, and the citations in one
+            record, so you can see what a claim actually rests on. This guide covers the public
+            docket, the Quran library, the Editorial desk, and how to connect your own database.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             <Link

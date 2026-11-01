@@ -3,18 +3,8 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Menu, ShieldCheck, X } from "lucide-react";
 import { siteNavItems } from "@/lib/nav";
 import { ThemeToggle } from "@/components/ThemeToggle";
-
-function Mark({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`relative flex size-8 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink font-display text-[16px] leading-none font-semibold text-paper ${className}`}
-    >
-      <span className="absolute inset-x-0 top-0 h-[3px] bg-brass" />
-      <span className="mt-0.5">D</span>
-    </span>
-  );
-}
+import { BrandMark } from "@/components/BrandMark";
+import { SITE_NAME, SITE_TAGLINE } from "@/lib/brand";
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
@@ -34,9 +24,9 @@ export function SiteNav() {
       <header className="sticky top-0 z-50 border-b border-rule bg-canvas">
         <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
           <Link to="/" className="group flex min-w-0 items-center gap-2.5" onClick={close}>
-            <Mark />
-            <span className="font-display text-[19px] leading-none font-semibold tracking-[-0.02em] text-ink">
-              Docket
+            <BrandMark className="size-8 text-[11px]" />
+            <span className="font-display text-[16px] leading-none font-semibold tracking-[-0.02em] text-ink sm:text-[18px]">
+              {SITE_NAME}
             </span>
           </Link>
 
@@ -105,11 +95,13 @@ export function SiteNav() {
           <div className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-rule bg-surface px-5 py-5 shadow-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <Mark />
+                <BrandMark className="size-8 text-[11px]" />
                 <div>
-                  <div className="font-display text-[18px] leading-none font-semibold">Docket</div>
+                  <div className="font-display text-[18px] leading-none font-semibold">
+                    {SITE_NAME}
+                  </div>
                   <div className="mt-1 font-mono text-[9px] tracking-[0.02em] text-mist">
-                    Argument, on the record
+                    {SITE_TAGLINE}
                   </div>
                 </div>
               </div>

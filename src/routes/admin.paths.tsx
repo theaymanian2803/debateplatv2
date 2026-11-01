@@ -9,7 +9,7 @@ import { Button, EmptyRow, Field, Input, Panel, Textarea } from "@/components/ad
 export const Route = createFileRoute("/admin/paths")({
   head: () => ({
     meta: [
-      { title: "Reading paths — Docket Editorial" },
+      { title: "Reading paths — Libyano School Editorial" },
       {
         name: "description",
         content: "Curate ordered reading paths through the corpus.",

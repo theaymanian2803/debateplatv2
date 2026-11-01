@@ -7,8 +7,10 @@ import { rulingFor, type Ruling } from "@/lib/rulings";
 import { docketNo, recordGroupLabel } from "@/lib/docket";
 import { joinWaitlist } from "@/lib/corpus-api";
 import { RulingStamp, RulingTag, StatusBadge } from "@/components/StatusBadge";
+import { BrandMark } from "@/components/BrandMark";
+import { SITE_NAME, SITE_TAGLINE, SITE_TITLE } from "@/lib/brand";
 
-const title = "Docket — Argument, on the record";
+const title = SITE_TITLE;
 const description =
   "A case file for contested claims. Read the source, read the commentary, compare the rebuttals, and see what the citations actually support.";
 
@@ -111,7 +113,7 @@ const plans = [
 
 const faqs = [
   {
-    q: "What is Docket?",
+    q: "What is Libyano School?",
     a: "A case file for contested claims. It keeps primary texts, commentary, rebuttals, citations, and statuses in one record — and shows where every claim came from.",
   },
   {
@@ -171,8 +173,8 @@ function Hero() {
             Argument, <span className="border-b-2 border-brass pb-1">on the record</span>.
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-steel sm:text-[16.5px]">
-            Docket is a case file for contested claims. Read the source, read the commentary,
-            compare the rebuttals, and see what the citations actually support.
+            Libyano School is a case file for contested claims. Read the source, read the
+            commentary, compare the rebuttals, and see what the citations actually support.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
@@ -218,7 +220,7 @@ function CasePreview() {
       <div aria-hidden className="absolute -inset-3 -z-10 border border-rule/70 bg-surface-2/40" />
       <div className="file-sheet sheet-in overflow-hidden border-t-2 border-t-brass">
         <div className="flex flex-wrap items-center gap-2 border-b border-rule px-3 py-2">
-          <span className="font-mono text-[9px] tracking-[0.02em] text-mist">Docket</span>
+          <span className="font-mono text-[9px] tracking-[0.02em] text-mist">{SITE_NAME}</span>
           <span className="font-mono text-[10px] text-ink">{docketNo(entry.id)}</span>
           <span className="ml-auto font-mono text-[9px] text-mist">
             {recordGroupLabel(entry.collection)}
@@ -419,7 +421,7 @@ function FeaturedDocket() {
 
       <div className="mt-8 border-t border-rule">
         <div className="hidden grid-cols-[9.5rem_1fr_10rem_9rem_5rem] gap-4 border-b border-rule px-2 py-2 font-mono text-[9px] text-mist sm:grid">
-          <span>Docket</span>
+          <span>{SITE_NAME}</span>
           <span>Claim</span>
           <span>Collection</span>
           <span>Status</span>
@@ -614,11 +616,11 @@ function Registry() {
         <div className="file-sheet p-4 sm:p-5">
           <div className="flex items-center justify-between border-b border-rule pb-3">
             <div className="flex items-center gap-2">
-              <span className="flex size-7 items-center justify-center border border-ink bg-ink font-display text-[12px] font-semibold text-paper">
-                D
-              </span>
+              <BrandMark className="size-7 text-[10px]" />
               <div>
-                <div className="font-display text-[15px] leading-none font-semibold">Docket</div>
+                <div className="font-display text-[15px] leading-none font-semibold">
+                  {SITE_NAME}
+                </div>
                 <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
               </div>
             </div>
@@ -921,13 +923,12 @@ function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="relative flex size-8 items-center justify-center overflow-hidden border border-ink bg-ink font-display text-[15px] font-semibold text-paper">
-                <span className="absolute inset-x-0 top-0 h-[3px] bg-brass" />
-                <span className="mt-0.5">D</span>
-              </span>
+              <BrandMark className="size-8 text-[11px]" />
               <div>
-                <div className="font-display text-[17px] leading-none font-semibold">Docket</div>
-                <div className="mt-1 font-mono text-[8.5px] text-mist">Argument, on the record</div>
+                <div className="font-display text-[17px] leading-none font-semibold">
+                  {SITE_NAME}
+                </div>
+                <div className="mt-1 font-mono text-[8.5px] text-mist">{SITE_TAGLINE}</div>
               </div>
             </div>
             <p className="mt-3 max-w-xs text-[12px] leading-relaxed text-mist">
@@ -936,7 +937,7 @@ function Footer() {
             </p>
           </div>
           <FooterColumn
-            title="Docket"
+            title="Explore"
             links={[
               ["Cases", "/cases"],
               ["Quran library", "/quran"],
@@ -965,7 +966,7 @@ function Footer() {
         </div>
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-5">
           <p className="font-mono text-[9px] text-mist">
-            © {new Date().getFullYear()} Docket. Source texts retain their own licences.
+            © {new Date().getFullYear()} {SITE_NAME}. Source texts retain their own licences.
           </p>
           <p className="font-mono text-[9px] text-mist">
             Built for careful reading, not hot takes.

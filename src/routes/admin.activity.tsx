@@ -6,10 +6,10 @@ import { EmptyRow, Panel } from "@/components/admin/ui";
 export const Route = createFileRoute("/admin/activity")({
   head: () => ({
     meta: [
-      { title: "Editorial activity — Docket Editorial" },
+      { title: "Editorial activity — Libyano School Editorial" },
       {
         name: "description",
-        content: "A running audit trail of every edit made to the Docket record.",
+        content: "A running audit trail of every edit made to the Libyano School record.",
       },
       { name: "robots", content: "noindex" },
     ],

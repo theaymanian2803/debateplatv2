@@ -1,6 +1,6 @@
-# Docket
+# Libyano School
 
-A case file for contested claims. Read the source, read the commentary, compare the rebuttals, and see what the citations actually support. Docket brings comparative religion and philosophy into one cited record, with a public docket for readers and a Registry for editors.
+A case file for contested claims. Read the source, read the commentary, compare the rebuttals, and see what the citations actually support. Libyano School brings comparative religion and philosophy into one cited record, with a public docket for readers and a Registry for editors.
 
 ## Routes
 

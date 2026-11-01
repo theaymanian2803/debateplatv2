@@ -1,4 +1,5 @@
 import type { Entry } from "@/lib/corpus";
+import { SITE_NAME } from "@/lib/brand";
 
 export type CitationFormat = "chicago" | "apa" | "mla" | "bibtex";
 
@@ -41,13 +42,13 @@ export function caseCitation(
 
   switch (format) {
     case "chicago":
-      return `Docket. "${title}." Accessed ${date}. ${url}.`;
+      return `${SITE_NAME}. "${title}." Accessed ${date}. ${url}.`;
     case "apa":
-      return `Docket. (n.d.). ${title}. Retrieved ${date}, from ${url}`;
+      return `${SITE_NAME}. (n.d.). ${title}. Retrieved ${date}, from ${url}`;
     case "mla":
-      return `"${title}." Docket, ${url}. Accessed ${date}.`;
+      return `"${title}." ${SITE_NAME}, ${url}. Accessed ${date}.`;
     case "bibtex":
-      return `@misc{docket-${entry.id},\n  author = {{Docket}},\n  title = {${bibTitle(entry.title)}},\n  year = {${year}},\n  note = {Case file. Accessed ${date}.},\n  url = {${url}}\n}`;
+      return `@misc{docket-${entry.id},\n  author = {{${SITE_NAME}}},\n  title = {${bibTitle(entry.title)}},\n  year = {${year}},\n  note = {Case file. Accessed ${date}.},\n  url = {${url}}\n}`;
   }
 }
 

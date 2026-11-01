@@ -13,10 +13,11 @@ import { getCorpus, resetCorpus } from "@/lib/corpus-api";
 import { authState, login, logout } from "@/lib/auth-api";
 import { Input } from "@/components/admin/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { BrandMark } from "@/components/BrandMark";
 
-const title = "Docket Editorial — Case management";
+const title = "Libyano School Editorial — Case management";
 const description =
-  "Manage cases, commentary, rebuttals, sources, and the taxonomy behind the Docket record.";
+  "Manage cases, commentary, rebuttals, sources, and the taxonomy behind the Libyano School record.";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -46,18 +47,6 @@ const nav = [
   { to: "/admin/database", label: "Database" },
   { to: "/admin/activity", label: "Activity" },
 ] as const;
-
-function Mark({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`relative flex size-8 shrink-0 items-center justify-center overflow-hidden border border-ink bg-ink font-display text-[15px] leading-none font-semibold text-paper ${className}`}
-    >
-      <span className="absolute inset-x-0 top-0 h-[3px] bg-brass" />
-      <span className="mt-0.5">D</span>
-    </span>
-  );
-}
 
 function AdminLayout() {
   const { data } = useQuery({ queryKey: ["corpus"], queryFn: getCorpus });
@@ -132,10 +121,10 @@ function AdminLayout() {
             <div className="absolute inset-y-0 left-0 flex w-64 max-w-[85vw] flex-col border-r border-rule bg-surface px-4 py-5 shadow-xl">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2.5">
-                  <Mark />
+                  <BrandMark className="size-8 text-[11px]" />
                   <div>
                     <div className="font-sidebar text-[16px] leading-none font-bold tracking-[-0.02em]">
-                      Docket
+                      Libyano School
                     </div>
                     <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
                   </div>
@@ -157,9 +146,11 @@ function AdminLayout() {
           <aside className="hidden w-60 shrink-0 flex-col border-r border-rule bg-surface md:flex">
             <div className="border-b border-rule px-5 py-5">
               <div className="flex items-center gap-2.5">
-                <Mark />
+                <BrandMark className="size-8 text-[11px]" />
                 <div>
-                  <div className="font-display text-[16px] leading-none font-semibold">Docket</div>
+                  <div className="font-display text-[16px] leading-none font-semibold">
+                    Libyano School
+                  </div>
                   <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
                 </div>
               </div>
@@ -282,10 +273,10 @@ function AdminLogin({ configured }: { configured: boolean }) {
     <div className="flex min-h-dvh w-full items-center justify-center bg-canvas px-4 font-sans text-ink">
       <div className="w-full max-w-sm border border-rule bg-surface p-8">
         <div className="flex items-center gap-3">
-          <Mark className="size-10 text-[18px]" />
+          <BrandMark className="size-10 text-[13px]" />
           <div>
             <div className="font-sidebar text-[17px] leading-none font-bold tracking-[-0.02em]">
-              Docket
+              Libyano School
             </div>
             <div className="mt-1 font-mono text-[8.5px] text-mist">Editorial desk</div>
           </div>

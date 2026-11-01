@@ -12,6 +12,7 @@ import { type ReactNode } from "react";
 
 import { DemoBanner } from "@/components/DemoBanner";
 import { SiteNav } from "@/components/SiteNav";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/brand";
 import { themeInitScript } from "@/lib/theme";
 import appCss from "../styles.css?url";
 
@@ -75,22 +76,21 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
-const description =
-  "A case file for contested claims. Read the source, read the commentary, compare the rebuttals, and see what the citations support.";
+const description = SITE_DESCRIPTION;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Docket — Argument, on the record" },
+      { title: SITE_TITLE },
       { name: "description", content: description },
-      { property: "og:title", content: "Docket — Argument, on the record" },
+      { property: "og:title", content: SITE_TITLE },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "/og-docket.png" },
+      { property: "og:image", content: "/og-libyano.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "/og-docket.png" },
+      { name: "twitter:image", content: "/og-libyano.png" },
     ],
     links: [
       {
@@ -103,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Martian+Mono:wght@100..800&family=Public+Sans:ital,wght@0,100..900;1,100..900&family=Unbounded:wght@400..700&family=Noto+Naskh+Arabic:wght@400..700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Hebrew:wght@100..900&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
     ],
   }),
   shellComponent: RootShell,

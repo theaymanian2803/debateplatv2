@@ -15,14 +15,17 @@ import { Button, EmptyRow, Field, Input, Panel } from "@/components/admin/ui";
 export const Route = createFileRoute("/admin/taxonomy")({
   head: () => ({
     meta: [
-      { title: "Taxonomy — Docket Editorial" },
+      { title: "Taxonomy — Libyano School Editorial" },
       {
         name: "description",
         content:
-          "Organise the categories, sub-categories, and tags that structure the Docket record.",
+          "Organise the categories, sub-categories, and tags that structure the Libyano School record.",
       },
-      { property: "og:title", content: "Taxonomy — Docket Editorial" },
-      { property: "og:description", content: "Manage categories and tags in the Docket record." },
+      { property: "og:title", content: "Taxonomy — Libyano School Editorial" },
+      {
+        property: "og:description",
+        content: "Manage categories and tags in the Libyano School record.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
