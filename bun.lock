@@ -81,6 +81,7 @@
     },
   },
   "overrides": {
+    "@tanstack/start-server-core": "1.169.45",
     "rolldown": "1.2.1",
   },
   "packages": {

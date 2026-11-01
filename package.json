@@ -14,7 +14,8 @@
     "test": "vitest run"
   },
   "overrides": {
-    "rolldown": "1.2.1"
+    "rolldown": "1.2.1",
+    "@tanstack/start-server-core": "1.169.45"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
